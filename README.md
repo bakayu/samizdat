@@ -7,34 +7,41 @@ Samizdat is a permissionless protocol connecting content publishers with display
 ## 🛣️ Roadmap
 
 - [x] Core program architecture
-- [ ] Multi-CID ad campaigns
-- [ ] Advanced targeting algorithms
+- [x] Multi-CID ad campaigns
+- [x] On-chain target filter matching
+- [x] Per-node claim cooldown
+- [x] Upfront campaign funding
 - [ ] Screen reputation system
+- [ ] Video content support
 
 ## Overview
 
-**Publishers** upload content to decentralized storage and create campaigns specifying targeting criteria and bounties per play.
+**Publishers** upload content to decentralized storage and create campaigns specifying targeting criteria, bounty per play, and cooldown between claims. Campaigns are fully funded at creation.
 
-**Operators** run display nodes (screens) that discover eligible campaigns, validate content locally, display it, and submit proof to claim bounties.
+**Operators** run display nodes (screens) that discover eligible campaigns, claim them, display content, and submit confirmation to receive bounty payments directly to their wallet.
 
-The protocol ensures publishers only pay for confirmed displays while operators maintain full control over what appears on their hardware.
+The protocol ensures publishers only pay for confirmed displays while operators maintain full control over what appears on their hardware via `blocked_tag_mask`.
 
 ## Core Architecture
 
-**PublisherAccount (PDA)**: Stores campaign CIDs, targeting filters, bounty amounts, and vault for funding displays.
+**PublisherAccount (PDA)**: Publisher identity with aggregate stats.
 
-**NodeAccount (PDA)**: Stores display metadata (location, size, footfall), content filters, and vault for receiving payments.
+**CampaignAccount (PDA)**: Campaign state — CIDs, targeting filters, content tag bitmask, bounty rate, claim cooldown, and SOL vault.
 
-**PlayRecord (PDA)**: Tracks individual display claims and confirmations with timeout protection.
+**NodeAccount (PDA)**: Display node specs — location, screen size, blocked content tags, estimated footfall, and lifetime earnings.
+
+**PlayRecord (PDA)**: Tracks individual display claims and confirmations with 5-minute timeout protection.
+
+**ClaimCooldown (PDA)**: Per-(campaign, node) tracker preventing rapid re-claims by the same node.
 
 ### Flow
 
 ```
-Publisher → Upload CID → Create Campaign → Fund Vault
+Publisher → Upload CID → Create Campaign (auto-funded) → Active
                               ↓
-Operator → Query Campaigns → Download → Examine → Claim → Display → Confirm
+Operator → Query Campaigns → Claim (on-chain filter match) → Display → Confirm → Payment
                               ↓
-                         Payment Settlement
+                         Timeout Recovery (permissionless)
 ```
 
 ## Quick Start
@@ -46,7 +53,7 @@ Operator → Query Campaigns → Download → Examine → Claim → Display → 
 ### Build and Test
 
 ```bash
-git clone https://github.com/yourorg/samizdat
+git clone https://github.com/bakayu/samizdat
 
 cd samizdat
 
@@ -59,6 +66,7 @@ anchor test
 
 ## Documentation
 
-- [Architecture](./docs/README.md) - System design and workflows
-- [Account Structures](./docs/accounts.md) - Detailed PDA specifications
-- [API Reference](./docs/api.md) - All instructions and parameters
+- [Architecture](./docs/README.md) — System design, state machines, and workflows
+- [Account Structures](./docs/accounts.md) — All PDAs, fields, and derivation examples
+- [Instructions Reference](./docs/instructions.md) — Every instruction with accounts, args, and validations
+- [Error Codes](./docs/errors.md) — All error variants categorized by type
