@@ -80,16 +80,28 @@ pub fn process_confirm_play(ctx: Context<ConfirmPlay>) -> Result<()> {
 
     // Update CampaignAccount
     let campaign = &mut ctx.accounts.campaign_account;
-    campaign.plays_completed = campaign.plays_completed.checked_add(1).unwrap();
+    campaign.plays_completed = campaign
+        .plays_completed
+        .checked_add(1)
+        .ok_or(SamizdatError::ArithmeticOverflow)?;
 
     // Update NodeAccount
     let node = &mut ctx.accounts.node_account;
-    node.total_plays = node.total_plays.checked_add(1).unwrap();
-    node.total_earnings = node.total_earnings.checked_add(bounty).unwrap();
+    node.total_plays = node
+        .total_plays
+        .checked_add(1)
+        .ok_or(SamizdatError::ArithmeticOverflow)?;
+    node.total_earnings = node
+        .total_earnings
+        .checked_add(bounty)
+        .ok_or(SamizdatError::ArithmeticOverflow)?;
 
     // Update PublisherAccount
     let publisher = &mut ctx.accounts.publisher_account;
-    publisher.total_spent = publisher.total_spent.checked_add(bounty).unwrap();
+    publisher.total_spent = publisher
+        .total_spent
+        .checked_add(bounty)
+        .ok_or(SamizdatError::ArithmeticOverflow)?;
 
     Ok(())
 }
