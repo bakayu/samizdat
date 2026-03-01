@@ -3,7 +3,6 @@ import { Fragment, useContext, useState } from "react";
 import type { CalendarDate } from "@internationalized/date";
 import { ChevronLeft, ChevronRight } from "@untitledui/icons";
 import { useDateFormatter } from "react-aria";
-import type { RangeCalendarProps as AriaRangeCalendarProps, DateValue } from "react-aria-components";
 import {
     CalendarGrid as AriaCalendarGrid,
     CalendarGridBody as AriaCalendarGridBody,
@@ -14,6 +13,7 @@ import {
     RangeCalendarStateContext,
     useSlottedContext,
 } from "react-aria-components";
+import type { RangeCalendarProps as AriaRangeCalendarProps, DateValue } from "react-aria-components";
 import { Button } from "@/components/base/buttons/button";
 import { useBreakpoint } from "@/hooks/use-breakpoint";
 import { CalendarCell } from "./cell";

@@ -1,6 +1,6 @@
 import type { ReactNode, Ref } from "react";
-import type { TextProps as AriaTextProps } from "react-aria-components";
 import { Text as AriaText } from "react-aria-components";
+import type { TextProps as AriaTextProps } from "react-aria-components";
 import { cx } from "@/utils/cx";
 
 interface HintTextProps extends AriaTextProps {
