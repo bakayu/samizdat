@@ -1,0 +1,90 @@
+name: Deploy Frontend to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'web/**'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+env:
+  SOLANA_CLI_VERSION: "latest"
+  ANCHOR_VERSION: "0.32.1"
+  RUST_TOOLCHAIN: "1.89.0"
+  BUN_VERSION: "latest"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: ${{env.RUST_TOOLCHAIN}}
+
+      - name: Setup Solana
+        run: |
+          sh -c "$(curl -sSfL https://release.anza.xyz/${{env.SOLANA_CLI_VERSION}}/install)"
+          echo "/home/runner/.local/share/solana/install/active_release/bin:$PATH" >> $GITHUB_PATH
+
+      - uses: cargo-bins/cargo-binstall@main
+
+      - name: Install Anchor CLI
+        run: cargo binstall anchor-cli@${{env.ANCHOR_VERSION}} --no-confirm --locked
+
+      # - name: Inject Program Keypair
+      #   run: |
+      #     mkdir -p target/deploy
+      #     echo "${{ secrets.PROGRAM_KEYPAIR_BYTES }}" > target/deploy/cayed-keypair.json
+
+      - name: Anchor build
+        run: anchor build
+        shell: bash
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{env.BUN_VERSION}}
+
+      - name: Install client gen dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Generate Codama Client
+        run: bun createCodamaClient.ts
+
+      - name: Install frontend dependencies
+        working-directory: web
+        run: bun install --frozen-lockfile
+
+      - name: Build frontend
+        working-directory: web
+        run: bun run build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/dist
+
+  deploy:
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

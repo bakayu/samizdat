@@ -24,10 +24,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@master
+        uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: ${{ env.RUST_TOOLCHAIN }}
-          components: rustfmt, clippy
 
       - name: Cache Rust dependencies
         uses: actions/cache@v4
@@ -58,6 +57,18 @@ jobs:
       - name: Check TS/JS formatting
         run: bun run format
 
+      - name: Install frontend dependencies
+        working-directory: web
+        run: bun install --frozen-lockfile
+
+      - name: Check web directory formatting
+        working-directory: web
+        run: bun run format
+
+      - name: Check web directory linting
+        working-directory: web
+        run: bun run lint
+
   build-and-test:
     name: Build & Test
     runs-on: ubuntu-latest
@@ -66,10 +77,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@master
+        uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: ${{ env.RUST_TOOLCHAIN }}
-          components: rustfmt, clippy
 
       - name: Cache Rust dependencies
         uses: actions/cache@v4
@@ -83,15 +93,23 @@ jobs:
           key: rust-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: rust-${{ runner.os }}-
 
-      - name: Install Solana CLI
-        uses: solana-program/setup-solana@v1
-        with:
-          solana-cli-version: ${{ env.SOLANA_CLI_VERSION }}
+      - name: Setup Solana
+        run: |
+          sh -c "$(curl -sSfL https://release.anza.xyz/${{env.SOLANA_CLI_VERSION}}/install)"
+          echo "/home/runner/.local/share/solana/install/active_release/bin:$PATH" >> $GITHUB_PATH
+
+      - uses: cargo-bins/cargo-binstall@main
 
       - name: Install Anchor CLI
-        uses: coral-xyz/setup-anchor@v3
-        with:
-          anchor-version: ${{ env.ANCHOR_VERSION }}
+        run: cargo binstall anchor-cli@${{env.ANCHOR_VERSION}} --no-confirm --locked
+
+      # This is a quirk I came across
+      # let's see if it works without the hack
+
+      # - name: Inject Program Keypair
+      #   run: |
+      #     mkdir -p target/deploy
+      #     echo "${{ secrets.PROGRAM_KEYPAIR_BYTES }}" > target/deploy/cayed-keypair.json
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -101,14 +119,9 @@ jobs:
       - name: Install JS dependencies
         run: bun install --frozen-lockfile
 
-      - name: Generate Solana keypair
-        run: solana-keygen new --no-bip39-passphrase
-
+      # anchor keys sync is run automatically on build
       - name: Build program
         run: anchor build
-
-      - name: Verify program keypair matches declared ID
-        run: anchor keys verify samizdat
 
       - name: Generate Codama client
         run: bun createCodamaClient.ts
