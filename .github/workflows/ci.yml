@@ -80,6 +80,9 @@ jobs:
       - name: Install Anchor CLI
         run: cargo binstall anchor-cli@${{env.ANCHOR_VERSION}} --no-confirm --locked --force
 
+      - name: Generate Solana keypair
+        run: solana-keygen new --no-bip39-passphrase
+        
       # This is a quirk I came across
       # let's see if it works without the hack
 
