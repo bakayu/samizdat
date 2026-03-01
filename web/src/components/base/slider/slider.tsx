@@ -1,4 +1,3 @@
-import type { SliderProps as AriaSliderProps } from "react-aria-components";
 import {
     Label as AriaLabel,
     Slider as AriaSlider,
@@ -6,6 +5,7 @@ import {
     SliderThumb as AriaSliderThumb,
     SliderTrack as AriaSliderTrack,
 } from "react-aria-components";
+import type { SliderProps as AriaSliderProps } from "react-aria-components";
 import { cx, sortCx } from "@/utils/cx";
 
 const styles = sortCx({

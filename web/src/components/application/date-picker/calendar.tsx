@@ -2,7 +2,6 @@ import type { HTMLAttributes, PropsWithChildren } from "react";
 import { Fragment, useContext, useState } from "react";
 import { type CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
 import { ChevronLeft, ChevronRight } from "@untitledui/icons";
-import type { CalendarProps as AriaCalendarProps, DateValue } from "react-aria-components";
 import {
     Calendar as AriaCalendar,
     CalendarContext as AriaCalendarContext,
@@ -14,6 +13,7 @@ import {
     Heading as AriaHeading,
     useSlottedContext,
 } from "react-aria-components";
+import type { CalendarProps as AriaCalendarProps, DateValue } from "react-aria-components";
 import { Button } from "@/components/base/buttons/button";
 import { cx } from "@/utils/cx";
 import { CalendarCell } from "./cell";

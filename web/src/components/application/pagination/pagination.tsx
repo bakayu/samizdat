@@ -3,8 +3,8 @@ import { ButtonGroup, ButtonGroupItem } from "@/components/base/button-group/but
 import { Button } from "@/components/base/buttons/button";
 import { useBreakpoint } from "@/hooks/use-breakpoint";
 import { cx } from "@/utils/cx";
-import type { PaginationRootProps } from "./pagination-base";
 import { Pagination } from "./pagination-base";
+import type { PaginationRootProps } from "./pagination-base";
 
 interface PaginationProps extends Partial<Omit<PaginationRootProps, "children">> {
     /** Whether the pagination buttons are rounded. */

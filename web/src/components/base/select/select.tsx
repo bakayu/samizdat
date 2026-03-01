@@ -1,8 +1,8 @@
 import type { FC, ReactNode, Ref, RefAttributes } from "react";
 import { createContext, isValidElement } from "react";
 import { ChevronDown } from "@untitledui/icons";
-import type { SelectProps as AriaSelectProps } from "react-aria-components";
 import { Button as AriaButton, ListBox as AriaListBox, Select as AriaSelect, SelectValue as AriaSelectValue } from "react-aria-components";
+import type { SelectProps as AriaSelectProps } from "react-aria-components";
 import { Avatar } from "@/components/base/avatar/avatar";
 import { HintText } from "@/components/base/input/hint-text";
 import { Label } from "@/components/base/input/label";

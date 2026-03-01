@@ -1,12 +1,5 @@
 import type { FC, RefAttributes } from "react";
 import { DotsVertical } from "@untitledui/icons";
-import type {
-    ButtonProps as AriaButtonProps,
-    MenuItemProps as AriaMenuItemProps,
-    MenuProps as AriaMenuProps,
-    PopoverProps as AriaPopoverProps,
-    SeparatorProps as AriaSeparatorProps,
-} from "react-aria-components";
 import {
     Button as AriaButton,
     Header as AriaHeader,
@@ -16,6 +9,13 @@ import {
     MenuTrigger as AriaMenuTrigger,
     Popover as AriaPopover,
     Separator as AriaSeparator,
+} from "react-aria-components";
+import type {
+    ButtonProps as AriaButtonProps,
+    MenuItemProps as AriaMenuItemProps,
+    MenuProps as AriaMenuProps,
+    PopoverProps as AriaPopoverProps,
+    SeparatorProps as AriaSeparatorProps,
 } from "react-aria-components";
 import { cx } from "@/utils/cx";
 
