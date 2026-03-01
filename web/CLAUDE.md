@@ -20,9 +20,9 @@ This is an **Untitled UI React** component library project built with:
 
 ```typescript
 // ✅ Correct
-import { Button as AriaButton, TextField as AriaTextField } from "react-aria-components";
+import { Button as AriaButton, TextField as AriaTextField } from 'react-aria-components';
 // ❌ Incorrect
-import { Button, TextField } from "react-aria-components";
+import { Button, TextField } from 'react-aria-components';
 ```
 
 This convention:
@@ -118,16 +118,16 @@ Located in `components/application/`, these are complex UI patterns:
 
 ```typescript
 interface CommonProps {
-    size?: "sm" | "md" | "lg";
-    isDisabled?: boolean;
-    isLoading?: boolean;
-    // ... other common props
+  size?: 'sm' | 'md' | 'lg';
+  isDisabled?: boolean;
+  isLoading?: boolean;
+  // ... other common props
 }
 
 interface ButtonProps extends CommonProps, HTMLButtonElement {
-    color?: "primary" | "secondary" | "tertiary";
-    iconLeading?: FC | ReactNode;
-    iconTrailing?: FC | ReactNode;
+  color?: 'primary' | 'secondary' | 'tertiary';
+  iconLeading?: FC | ReactNode;
+  iconTrailing?: FC | ReactNode;
 }
 ```
 
@@ -146,20 +146,20 @@ To change the main brand color across the entire application:
 1. **Update Brand Color Variables**: Edit `src/styles/theme.css` and modify the `--color-brand-*` variables
 2. **Maintain Color Scale**: Ensure you provide a complete color scale from 25 to 950 with proper contrast ratios
 3. **Example Brand Color Scale**:
-    ```css
-    --color-brand-25: rgb(252 250 255); /* Lightest tint */
-    --color-brand-50: rgb(249 245 255);
-    --color-brand-100: rgb(244 235 255);
-    --color-brand-200: rgb(233 215 254);
-    --color-brand-300: rgb(214 187 251);
-    --color-brand-400: rgb(182 146 246);
-    --color-brand-500: rgb(158 119 237); /* Base brand color */
-    --color-brand-600: rgb(127 86 217); /* Primary interactive color */
-    --color-brand-700: rgb(105 65 198);
-    --color-brand-800: rgb(83 56 158);
-    --color-brand-900: rgb(66 48 125);
-    --color-brand-950: rgb(44 28 95); /* Darkest shade */
-    ```
+   ```css
+   --color-brand-25: rgb(252 250 255); /* Lightest tint */
+   --color-brand-50: rgb(249 245 255);
+   --color-brand-100: rgb(244 235 255);
+   --color-brand-200: rgb(233 215 254);
+   --color-brand-300: rgb(214 187 251);
+   --color-brand-400: rgb(182 146 246);
+   --color-brand-500: rgb(158 119 237); /* Base brand color */
+   --color-brand-600: rgb(127 86 217); /* Primary interactive color */
+   --color-brand-700: rgb(105 65 198);
+   --color-brand-800: rgb(83 56 158);
+   --color-brand-900: rgb(66 48 125);
+   --color-brand-950: rgb(44 28 95); /* Darkest shade */
+   ```
 
 The color scale automatically adapts to both light and dark modes through the CSS variable system.
 
@@ -167,18 +167,18 @@ The color scale automatically adapts to both light and dark modes through the CS
 
 ```typescript
 export const styles = sortCx({
-    common: {
-        root: "base-classes-here",
-        icon: "icon-classes-here",
-    },
-    sizes: {
-        sm: { root: "small-size-classes" },
-        md: { root: "medium-size-classes" },
-    },
-    colors: {
-        primary: { root: "primary-color-classes" },
-        secondary: { root: "secondary-color-classes" },
-    },
+  common: {
+    root: 'base-classes-here',
+    icon: 'icon-classes-here',
+  },
+  sizes: {
+    sm: { root: 'small-size-classes' },
+    md: { root: 'medium-size-classes' },
+  },
+  colors: {
+    primary: { root: 'primary-color-classes' },
+    secondary: { root: 'secondary-color-classes' },
+  },
 });
 ```
 
@@ -231,11 +231,11 @@ import { Home01, Settings01, ChevronDown } from "@untitledui/icons";
 ### PRO Icon Styles
 
 ```typescript
-import { Home01 } from "@untitledui-pro/icons";
+import { Home01 } from '@untitledui-pro/icons';
 // Line
-import { Home01 } from "@untitledui-pro/icons/duocolor";
-import { Home01 } from "@untitledui-pro/icons/duotone";
-import { Home01 } from "@untitledui-pro/icons/solid";
+import { Home01 } from '@untitledui-pro/icons/duocolor';
+import { Home01 } from '@untitledui-pro/icons/duotone';
+import { Home01 } from '@untitledui-pro/icons/solid';
 ```
 
 ## Form Handling
@@ -261,7 +261,7 @@ import { Home01 } from "@untitledui-pro/icons/solid";
 For default small transition actions (hover states, color changes, etc.), use:
 
 ```typescript
-className = "transition duration-100 ease-linear";
+className = 'transition duration-100 ease-linear';
 ```
 
 This provides a snappy 100ms linear transition that feels responsive without being jarring.
@@ -278,8 +278,8 @@ This provides a snappy 100ms linear transition that feels responsive without bei
 
 ```typescript
 const Select = SelectComponent as typeof SelectComponent & {
-    Item: typeof SelectItem;
-    ComboBox: typeof ComboBox;
+  Item: typeof SelectItem;
+  ComboBox: typeof ComboBox;
 };
 Select.Item = SelectItem;
 Select.ComboBox = ComboBox;
@@ -340,7 +340,7 @@ The Button component is the most frequently used interactive element across the 
 **Import:**
 
 ```typescript
-import { Button } from "@/components/base/buttons/button";
+import { Button } from '@/components/base/buttons/button';
 ```
 
 **Common Props:**
@@ -377,8 +377,8 @@ Text input component with extensive customization options.
 **Import:**
 
 ```typescript
-import { Input } from "@/components/base/input/input";
-import { InputGroup } from "@/components/base/input/input-group";
+import { Input } from '@/components/base/input/input';
+import { InputGroup } from '@/components/base/input/input-group';
 ```
 
 **Common Props:**
@@ -421,8 +421,8 @@ Dropdown selection component with search and multi-select capabilities.
 **Import:**
 
 ```typescript
-import { MultiSelect } from "@/components/base/select/multi-select";
-import { Select } from "@/components/base/select/select";
+import { MultiSelect } from '@/components/base/select/multi-select';
+import { Select } from '@/components/base/select/select';
 ```
 
 **Common Props:**
@@ -479,7 +479,7 @@ Checkbox component for boolean selections.
 **Import:**
 
 ```typescript
-import { Checkbox } from "@/components/base/checkbox/checkbox";
+import { Checkbox } from '@/components/base/checkbox/checkbox';
 ```
 
 **Common Props:**
@@ -514,7 +514,7 @@ Badge components for status indicators and labels.
 **Import:**
 
 ```typescript
-import { Badge, BadgeWithDot, BadgeWithIcon } from "@/components/base/badges/badges";
+import { Badge, BadgeWithDot, BadgeWithIcon } from '@/components/base/badges/badges';
 ```
 
 **Common Props:**
@@ -543,8 +543,8 @@ Avatar component for user profile images.
 **Import:**
 
 ```typescript
-import { Avatar } from "@/components/base/avatar/avatar";
-import { AvatarLabelGroup } from "@/components/base/avatar/avatar-label-group";
+import { Avatar } from '@/components/base/avatar/avatar';
+import { AvatarLabelGroup } from '@/components/base/avatar/avatar-label-group';
 ```
 
 **Common Props:**
@@ -586,7 +586,7 @@ Decorative icon component with themed backgrounds for emphasis and visual hierar
 **Import:**
 
 ```typescript
-import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-icon";
+import { FeaturedIcon } from '@/components/foundations/featured-icon/featured-icon';
 ```
 
 **Common Props:**
@@ -631,7 +631,7 @@ import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-ic
 **Import:**
 
 ```typescript
-import { Button } from "@/components/base/buttons/button";
+import { Button } from '@/components/base/buttons/button';
 ```
 
 **Link Colors:**
