@@ -73,12 +73,12 @@ jobs:
       - name: Setup Solana
         run: |
           sh -c "$(curl -sSfL https://release.anza.xyz/${{env.SOLANA_CLI_VERSION}}/install)"
-          echo "/home/runner/.local/share/solana/install/active_release/bin:$PATH" >> $GITHUB_PATH
+          echo "/home/runner/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
 
       - uses: cargo-bins/cargo-binstall@main
 
       - name: Install Anchor CLI
-        run: cargo binstall anchor-cli@${{env.ANCHOR_VERSION}} --no-confirm --locked --forced
+        run: cargo binstall anchor-cli@${{env.ANCHOR_VERSION}} --no-confirm --locked --force
 
       # This is a quirk I came across
       # let's see if it works without the hack
