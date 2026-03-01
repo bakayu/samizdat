@@ -99,9 +99,11 @@ jobs:
       # anchor keys sync is run automatically on build
       - name: Build program
         run: anchor build
+        shell: bash
 
       - name: Generate Codama client
         run: bun createCodamaClient.ts
 
       - name: Run tests
         run: anchor test
+        shell: bash
