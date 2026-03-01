@@ -1,0 +1,112 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  SOLANA_CLI_VERSION: "stable"
+  ANCHOR_VERSION: "0.32.1"
+  RUST_TOOLCHAIN: "1.89.0"
+  BUN_VERSION: "latest"
+
+jobs:
+  lint:
+    name: Lint & Format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: ${{ env.RUST_TOOLCHAIN }}
+          components: rustfmt, clippy
+
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+
+      - name: Run Clippy
+        run: cargo clippy --all-targets -- -D warnings
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Install JS dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Check TS/JS formatting
+        run: bun run format
+
+      - name: Install frontend dependencies
+        working-directory: web
+        run: bun install --frozen-lockfile
+
+      - name: Check web directory formatting
+        working-directory: web
+        run: bun run format
+
+      - name: Check web directory linting
+        working-directory: web
+        run: bun run lint
+
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: ${{ env.RUST_TOOLCHAIN }}
+
+      - name: Setup Solana
+        run: |
+          sh -c "$(curl -sSfL https://release.anza.xyz/${{env.SOLANA_CLI_VERSION}}/install)"
+          echo "/home/runner/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+
+      - uses: cargo-bins/cargo-binstall@main
+
+      - name: Install Anchor CLI
+        run: cargo binstall anchor-cli@${{env.ANCHOR_VERSION}} --no-confirm --locked --force
+
+      - name: Generate Solana keypair
+        run: solana-keygen new --no-bip39-passphrase
+        
+      # This is a quirk I came across
+      # let's see if it works without the hack
+
+      # - name: Inject Program Keypair
+      #   run: |
+      #     mkdir -p target/deploy
+      #     echo "${{ secrets.PROGRAM_KEYPAIR_BYTES }}" > target/deploy/cayed-keypair.json
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Install JS dependencies
+        run: bun install --frozen-lockfile
+
+      # anchor keys sync is run automatically on build
+      - name: Build program
+        run: anchor build
+        shell: bash
+
+      - name: Generate Codama client
+        run: bun createCodamaClient.ts
+
+      - name: Run tests
+        run: anchor test
+        shell: bash

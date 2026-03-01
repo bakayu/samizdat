@@ -22,6 +22,6 @@ const idl = await loadIdl();
 const codama = createFromRoot(rootNodeFromAnchor(idl));
 const genPath = path.join('web', 'client', 'samizdat');
 
-codama.accept(renderVisitor(genPath));
+codama.accept(renderVisitor(genPath, { formatCode: false }));
 
 console.log(`Generated types at ${genPath}`);

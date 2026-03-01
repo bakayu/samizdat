@@ -4,7 +4,7 @@
     "format:fix": "prettier tests/* -w",
     "format": "prettier tests/* --check",
     "test": "anchor test",
-    "generate-client": "anchor build && bun createCodamaClient.ts"
+    "generate-client": "anchor build && bun createCodamaClient.ts && prettier --write web/client/samizdat/**/*.ts"
   },
   "dependencies": {
     "@solana/kit": "^6.1.0",
