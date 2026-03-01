@@ -18,7 +18,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  SOLANA_CLI_VERSION: "latest"
+  SOLANA_CLI_VERSION: "stable"
   ANCHOR_VERSION: "0.32.1"
   RUST_TOOLCHAIN: "1.89.0"
   BUN_VERSION: "latest"
