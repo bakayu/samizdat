@@ -78,7 +78,7 @@ jobs:
       - uses: cargo-bins/cargo-binstall@main
 
       - name: Install Anchor CLI
-        run: cargo binstall anchor-cli@${{env.ANCHOR_VERSION}} --no-confirm --locked
+        run: cargo binstall anchor-cli@${{env.ANCHOR_VERSION}} --no-confirm --locked --forced
 
       # This is a quirk I came across
       # let's see if it works without the hack
