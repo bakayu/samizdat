@@ -40,7 +40,7 @@ jobs:
       - uses: cargo-bins/cargo-binstall@main
 
       - name: Install Anchor CLI
-        run: cargo binstall anchor-cli@${{env.ANCHOR_VERSION}} --no-confirm --locked
+        run: cargo binstall anchor-cli@${{env.ANCHOR_VERSION}} --no-confirm --locked --force
 
       # - name: Inject Program Keypair
       #   run: |
