@@ -4,7 +4,7 @@ use anchor_lang::prelude::*;
 #[derive(Accounts)]
 pub struct RegisterPublisher<'info> {
     #[account(
-        init,
+        init_if_needed,
         payer = authority,
         space = 8 + PublisherAccount::INIT_SPACE,
         seeds = [PUBLISHER_SEED, authority.key().as_ref()],
@@ -19,13 +19,17 @@ pub struct RegisterPublisher<'info> {
 }
 
 pub fn process_register_publisher(ctx: Context<RegisterPublisher>) -> Result<()> {
-    ctx.accounts.publisher_account.set_inner(PublisherAccount {
-        authority: ctx.accounts.authority.key(),
-        total_campaigns: 0,
-        total_spent: 0,
-        registered_at: Clock::get()?.unix_timestamp,
-        status: PublisherStatus::Active,
-        bump: ctx.bumps.publisher_account,
-    });
+    // Initialize only on first registration, keep existing state on reruns.
+    if ctx.accounts.publisher_account.authority == Pubkey::default() {
+        ctx.accounts.publisher_account.set_inner(PublisherAccount {
+            authority: ctx.accounts.authority.key(),
+            total_campaigns: 0,
+            total_spent: 0,
+            registered_at: Clock::get()?.unix_timestamp,
+            status: PublisherStatus::Active,
+            bump: ctx.bumps.publisher_account,
+        });
+    }
+
     Ok(())
 }

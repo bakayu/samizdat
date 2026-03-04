@@ -152,8 +152,8 @@ describe("Samizdat Program – Happy Path", () => {
         feePayer: publisher,
         instructions: [ix],
       });
-    } catch {
-      // Already registered, fine on devnet
+    } catch (error) {
+      throw error;
     }
 
     // Snapshot current publisher state
