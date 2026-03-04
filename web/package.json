@@ -13,10 +13,14 @@
     "format:fix": "bunx prettier --write ."
   },
   "dependencies": {
+    "@solana/kit": "^6.1.0",
+    "@solana/react": "^6.1.0",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.1.18",
     "@untitledui/file-icons": "^0.0.8",
     "@untitledui/icons": "^0.0.21",
+    "@wallet-standard/core": "^1.1.1",
+    "@wallet-standard/react": "^1.0.1",
     "input-otp": "^1.4.2",
     "motion": "^12.29.0",
     "qr-code-styling": "^1.9.2",
@@ -26,6 +30,7 @@
     "react-dom": "^19.2.3",
     "react-hotkeys-hook": "^5.2.3",
     "react-router": "^7.13.0",
+    "solana-kite": "^3.2.1",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.18",
     "tailwindcss-animate": "^1.0.7",

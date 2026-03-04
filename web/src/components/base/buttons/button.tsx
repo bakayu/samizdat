@@ -5,7 +5,7 @@ import type {
   FC,
   ReactNode,
 } from 'react';
-import React, { isValidElement } from 'react';
+import { isValidElement } from 'react';
 import { Button as AriaButton, Link as AriaLink } from 'react-aria-components';
 import type {
   ButtonProps as AriaButtonProps,

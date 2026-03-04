@@ -1,11 +1,11 @@
 @theme {
   /* FONT FAMILY */
   --font-body:
-    var(--font-inter, 'Inter'), -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+    'Inter', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
   --font-display:
-    var(--font-inter, 'Inter'), -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+    'Instrument Serif', Georgia, 'Times New Roman', serif;
   --font-mono:
-    ui-monospace, 'Roboto Mono', SFMono-Regular, Menlo, Monaco, Consolas,
+    'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     'Liberation Mono', 'Courier New', monospace;
 
   /* FONT SIZE */
@@ -138,18 +138,18 @@
   --color-white: rgb(255 255 255);
   --color-black: rgb(0 0 0);
 
-  --color-brand-25: rgb(252 250 255);
-  --color-brand-50: rgb(249 245 255);
-  --color-brand-100: rgb(244 235 255);
-  --color-brand-200: rgb(233 215 254);
-  --color-brand-300: rgb(214 187 251);
-  --color-brand-400: rgb(182 146 246);
-  --color-brand-500: rgb(158 119 237);
-  --color-brand-600: rgb(127 86 217);
-  --color-brand-700: rgb(105 65 198);
-  --color-brand-800: rgb(83 56 158);
-  --color-brand-900: rgb(66 48 125);
-  --color-brand-950: rgb(44 28 95);
+  --color-brand-25: rgb(255 250 245);
+  --color-brand-50: rgb(255 244 237);
+  --color-brand-100: rgb(255 230 213);
+  --color-brand-200: rgb(255 200 163);
+  --color-brand-300: rgb(255 156 102);
+  --color-brand-400: rgb(255 120 56);
+  --color-brand-500: rgb(255 77 0);
+  --color-brand-600: rgb(230 60 0);
+  --color-brand-700: rgb(188 42 0);
+  --color-brand-800: rgb(151 33 0);
+  --color-brand-900: rgb(119 28 0);
+  --color-brand-950: rgb(80 18 0);
 
   --color-error-25: rgb(255 251 250);
   --color-error-50: rgb(254 243 242);
