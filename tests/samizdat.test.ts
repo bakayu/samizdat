@@ -58,6 +58,8 @@ const SAMPLE_TARGET_FILTERS: TargetFiltersArgs = {
   requiredLandmarks: [],
 };
 
+const CLUSTER = (process.env.CLUSTER ?? "localnet") as "localnet" | "devnet";
+
 describe("Samizdat Program – Happy Path", () => {
   let connection: Connection;
   let publisher: TransactionSigner;
@@ -74,29 +76,33 @@ describe("Samizdat Program – Happy Path", () => {
   let initialTotalSpent: bigint;
 
   before(async () => {
-    connection = connect("devnet");
+    connection = connect(CLUSTER);
 
-    // Load the pre-funded devnet wallet as the publisher/fee payer
-    const publisherKeypairBytes = new Uint8Array(
-      JSON.parse(
-        readFileSync(
-          `${process.env.HOME}/.config/solana/devnet-test.json`,
-          "utf-8",
+    if (CLUSTER === "localnet") {
+      const [pub, op] = await connection.createWallets(2);
+      publisher = pub!;
+      operator = op!;
+    } else {
+      const publisherKeypairBytes = new Uint8Array(
+        JSON.parse(
+          readFileSync(
+            `${process.env.HOME}/.config/solana/devnet-test.json`,
+            "utf-8",
+          ),
         ),
-      ),
-    );
-    publisher = await createKeyPairSignerFromBytes(publisherKeypairBytes);
+      );
+      publisher = await createKeyPairSignerFromBytes(publisherKeypairBytes);
 
-    // Load the pre-funded operator wallet
-    const operatorKeypairBytes = new Uint8Array(
-      JSON.parse(
-        readFileSync(
-          `${process.env.HOME}/.config/solana/devnet-operator.json`,
-          "utf-8",
+      const operatorKeypairBytes = new Uint8Array(
+        JSON.parse(
+          readFileSync(
+            `${process.env.HOME}/.config/solana/devnet-operator.json`,
+            "utf-8",
+          ),
         ),
-      ),
-    );
-    operator = await createKeyPairSignerFromBytes(operatorKeypairBytes);
+      );
+      operator = await createKeyPairSignerFromBytes(operatorKeypairBytes);
+    }
 
     ({ pda: publisherAccountPDA } = await getPDAAndBump(
       SAMIZDAT_PROGRAM_ADDRESS,
@@ -147,16 +153,16 @@ describe("Samizdat Program – Happy Path", () => {
         instructions: [ix],
       });
     } catch {
-      // Already registered - that's fine on devnet
+      // Already registered, fine on devnet
     }
 
     // Snapshot current publisher state
-    const pub = await fetchPublisherAccount(
+    const pubAccount = await fetchPublisherAccount(
       connection.rpc,
       publisherAccountPDA,
     );
-    initialTotalCampaigns = pub.data.totalCampaigns;
-    initialTotalSpent = pub.data.totalSpent;
+    initialTotalCampaigns = pubAccount.data.totalCampaigns;
+    initialTotalSpent = pubAccount.data.totalSpent;
   });
 
   describe("Publisher Registration", () => {
