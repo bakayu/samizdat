@@ -14,7 +14,6 @@ import {
 import { Button } from '@/components/base/buttons/button';
 import { Dropdown } from '@/components/base/dropdown/dropdown';
 import { SelectedWalletAccountContext } from '@/context/selected-wallet-account-context';
-import { formatSol, useBalance } from '@/hooks/use-balance';
 import { cx } from '@/utils/cx';
 
 import { WalletAccountIcon } from './wallet-account-icon';
@@ -143,8 +142,6 @@ function ConnectableWalletItem({
 // ─── Connected Wallet Display ───────────────────────────────────────────────
 
 function ConnectedDisplay({ account }: { account: UiWalletAccount }) {
-  const { balance } = useBalance(account);
-
   return (
     <span className="flex items-center gap-2">
       <WalletAccountIcon
@@ -156,11 +153,6 @@ function ConnectedDisplay({ account }: { account: UiWalletAccount }) {
       <span className="font-mono text-xs">
         {account.address.slice(0, 4)}…{account.address.slice(-4)}
       </span>
-      {balance != null && (
-        <span className="hidden text-xs text-tertiary sm:inline">
-          {formatSol(balance)} SOL
-        </span>
-      )}
     </span>
   );
 }
@@ -190,15 +182,17 @@ export function ConnectWalletMenu() {
   return (
     <Dropdown.Root key={menuKey}>
       <Button size="sm" color="primary">
-        {selectedWalletAccount ? (
-          <ConnectedDisplay account={selectedWalletAccount} />
-        ) : (
-          <>
-            <Wallet01 className="size-4" />
-            Connect Wallet
-          </>
-        )}
-        <ChevronDown className="ml-1 size-3.5 text-fg-quaternary" />
+        <div className='flex gap-2 items-center'>
+          {selectedWalletAccount ? (
+            <ConnectedDisplay account={selectedWalletAccount} />
+          ) : (
+            <>
+              <Wallet01 className="size-4" />
+              Connect Wallet
+            </>
+          )}
+          <ChevronDown className="ml-1 size-3.5" />
+        </div>
       </Button>
 
       <Dropdown.Popover className="w-72">
