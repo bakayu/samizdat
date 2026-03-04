@@ -13,7 +13,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.number) || 'production' }}
+  group: pages
   cancel-in-progress: true
 
 env:
@@ -42,6 +42,11 @@ jobs:
       - name: Install Anchor CLI
         run: cargo binstall anchor-cli@${{env.ANCHOR_VERSION}} --no-confirm --locked --force
 
+      # - name: Inject Program Keypair
+      #   run: |
+      #     mkdir -p target/deploy
+      #     echo "${{ secrets.PROGRAM_KEYPAIR_BYTES }}" > target/deploy/cayed-keypair.json
+
       - name: Anchor build
         run: anchor build
         shell: bash
@@ -69,8 +74,7 @@ jobs:
         with:
           path: web/dist
 
-  deploy-production:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+  deploy:
     needs: build
     permissions:
       pages: write
@@ -83,20 +87,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-  deploy-preview:
-    if: github.event_name == 'pull_request'
-    needs: build
-    permissions:
-      pages: write
-      id-token: write
-    runs-on: ubuntu-latest
-    environment:
-      name: preview-pr-${{ github.event.number }}
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy preview
-        id: deployment
-        uses: actions/deploy-pages@v4
-        with:
-          preview: true
