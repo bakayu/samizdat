@@ -530,8 +530,13 @@ function DigitalTwinContent() {
               <div>
                 <span className="text-quaternary">Location</span>
                 <p className="font-mono text-primary">
-                  {geoToDecimal(node.location.latitude).toFixed(2)}°N,{' '}
-                  {Math.abs(geoToDecimal(node.location.longitude)).toFixed(2)}°W
+                  {(() => {
+                    const lat = geoToDecimal(node.location.latitude);
+                    const lon = geoToDecimal(node.location.longitude);
+                    const latDir = lat >= 0 ? 'N' : 'S';
+                    const lonDir = lon >= 0 ? 'E' : 'W';
+                    return `${Math.abs(lat).toFixed(2)}°${latDir}, ${Math.abs(lon).toFixed(2)}°${lonDir}`;
+                  })()}
                 </p>
               </div>
               <div>

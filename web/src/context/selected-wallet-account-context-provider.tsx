@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   getUiWalletAccountStorageKey,
@@ -14,11 +14,11 @@ import {
   type SelectedWalletAccountState,
 } from '@/context/selected-wallet-account-context';
 
-const STORAGE_KEY = 'cayed:selected-wallet';
+const STORAGE_KEY = 'samizdat:selected-wallet';
 
-let wasSetterInvoked = false;
 function getSavedWalletAccount(
-  wallets: readonly UiWallet[]
+  wallets: readonly UiWallet[],
+  wasSetterInvoked: boolean
 ): UiWalletAccount | undefined {
   if (wasSetterInvoked) {
     // After the user makes an explicit choice of wallet, stop trying to auto-select the
@@ -55,13 +55,16 @@ export function SelectedWalletAccountContextProvider({
   children: React.ReactNode;
 }) {
   const wallets = useWallets();
+  const wasSetterInvokedRef = useRef(false);
   const [selectedWalletAccount, setSelectedWalletAccountInternal] =
-    useState<SelectedWalletAccountState>(() => getSavedWalletAccount(wallets));
+    useState<SelectedWalletAccountState>(() =>
+      getSavedWalletAccount(wallets, wasSetterInvokedRef.current)
+    );
   const setSelectedWalletAccount: React.Dispatch<
     React.SetStateAction<SelectedWalletAccountState>
   > = setStateAction => {
     setSelectedWalletAccountInternal(prevSelectedWalletAccount => {
-      wasSetterInvoked = true;
+      wasSetterInvokedRef.current = true;
       const nextWalletAccount =
         typeof setStateAction === 'function'
           ? setStateAction(prevSelectedWalletAccount)
@@ -78,7 +81,10 @@ export function SelectedWalletAccountContextProvider({
     });
   };
   useEffect(() => {
-    const savedWalletAccount = getSavedWalletAccount(wallets);
+    const savedWalletAccount = getSavedWalletAccount(
+      wallets,
+      wasSetterInvokedRef.current
+    );
     if (savedWalletAccount) {
       setSelectedWalletAccountInternal(savedWalletAccount);
     }

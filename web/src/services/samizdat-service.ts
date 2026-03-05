@@ -42,6 +42,7 @@ import {
 
 import type { SamizdatService } from '@/providers/samizdat-service-provider';
 import type { WithAddress } from '@/types/samizdat';
+import { pollUntilReady } from '@/utils/poll-until-ready';
 
 import type {
   CampaignAccount,
@@ -95,7 +96,9 @@ export class SamizdatBlockchainService implements SamizdatService {
       'publisher',
       this.signer.address,
     ]);
-    return this.fetchPublisher(pda);
+    return pollUntilReady(() => this.fetchPublisher(pda), {
+      resourceName: 'Publisher account',
+    });
   }
 
   async getPublisher(authority: string): Promise<WithAddress<PublisherAccount> | null> {
@@ -135,7 +138,9 @@ export class SamizdatBlockchainService implements SamizdatService {
       SAMIZDAT_PROGRAM_ADDRESS,
       ['campaign', publisherPDA, BigInt(args.campaignId)]
     );
-    return this.fetchCampaign(campaignPDA);
+    return pollUntilReady(() => this.fetchCampaign(campaignPDA), {
+      resourceName: 'Campaign account',
+    });
   }
 
   async getCampaigns(): Promise<WithAddress<CampaignAccount>[]> {
@@ -214,7 +219,7 @@ export class SamizdatBlockchainService implements SamizdatService {
       this.signer.address,
       BigInt(args.nodeId),
     ]);
-    return this.fetchNode(pda);
+    return pollUntilReady(() => this.fetchNode(pda), { resourceName: 'Node account' });
   }
 
   async getNode(authority: string): Promise<WithAddress<NodeAccount> | null> {
@@ -266,7 +271,9 @@ export class SamizdatBlockchainService implements SamizdatService {
       nodeAddress,
       claimNonce,
     ]);
-    return this.fetchPlayRecord(pda);
+    return pollUntilReady(() => this.fetchPlayRecord(pda), {
+      resourceName: 'Play record',
+    });
   }
 
   async confirmPlay(playRecordAddress: string): Promise<void> {

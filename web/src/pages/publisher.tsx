@@ -753,7 +753,14 @@ function CreateCampaignModal({
               Cancel
             </Button>
             <Button size="md" iconLeading={Send01} type="submit" isDisabled={submitting}>
-              {submitting ? 'Creating...' : 'Create Campaign'}
+              {submitting ? (
+                <span className="flex items-center gap-2">
+                  <Loading01 className="size-4 animate-spin" />
+                  Creating...
+                </span>
+              ) : (
+                'Create Campaign'
+              )}
             </Button>
           </div>
         </form>
@@ -814,7 +821,14 @@ function RegisterPublisherPrompt({
         one-time on-chain registration.
       </p>
       <Button size="md" iconLeading={Plus} onClick={handleRegister} isDisabled={busy}>
-        {busy ? 'Registering...' : 'Register Publisher'}
+        {busy ? (
+          <span className="flex items-center gap-2">
+            <Loading01 className="size-4 animate-spin" />
+            Registering...
+          </span>
+        ) : (
+          'Register Publisher'
+        )}
       </Button>
     </div>
   );
@@ -863,7 +877,11 @@ function PublisherDashboardContent({
       setCheckedPublisher(true);
       if (pub) {
         const camps = await service.getCampaigns();
-        setCampaigns(camps);
+        const publisherCampaigns = camps.filter(
+          campaign => campaign.publisherAccount === pub.address
+        );
+
+        setCampaigns(publisherCampaigns);
       }
     } catch (err) {
       console.error('Failed to fetch publisher data:', err);

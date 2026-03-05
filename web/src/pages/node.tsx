@@ -194,7 +194,14 @@ function CampaignCard({
         isDisabled={isClaiming}
         className="mt-auto"
       >
-        {isClaiming ? 'Claiming...' : 'Claim Campaign'}
+        {isClaiming ? (
+          <span className="flex items-center gap-2">
+            <Loading01 className="size-3.5 animate-spin" />
+            Claiming...
+          </span>
+        ) : (
+          'Claim Campaign'
+        )}
       </Button>
     </motion.div>
   );
@@ -432,14 +439,14 @@ function RegisterNodePrompt({
       resolutionWidth: undefined,
       resolutionHeight: undefined,
       landmarks: '',
-      blockedTagMask: 0,
+      blockedTagMask: 0n,
       estimatedFootfall: undefined,
       establishmentType: '',
     },
   });
 
   const blockedTagMask = watch('blockedTagMask');
-  const toggleTag = (bit: number) => setValue('blockedTagMask', blockedTagMask ^ bit);
+  const toggleTag = (bit: bigint) => setValue('blockedTagMask', blockedTagMask ^ bit);
 
   const onSubmit = async (data: RegisterNodeForm) => {
     setSubmitting(true);
@@ -649,13 +656,13 @@ function RegisterNodePrompt({
           <p className="mb-2 text-sm font-medium text-secondary">Blocked Tags</p>
           <div className="flex flex-wrap gap-3">
             {TAG_BITS.map(({ bit, label }) => {
-              const bitNum = Number(bit);
+              const bitNum = bit;
               return (
                 <Checkbox
                   key={bitNum}
                   label={label}
                   size="sm"
-                  isSelected={(blockedTagMask & bitNum) !== 0}
+                  isSelected={(blockedTagMask & bitNum) !== 0n}
                   onChange={() => toggleTag(bitNum)}
                 />
               );

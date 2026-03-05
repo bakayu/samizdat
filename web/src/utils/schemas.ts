@@ -78,7 +78,7 @@ export const registerNodeSchema = z.object({
     .int()
     .positive('Must be positive'),
   landmarks: z.string().optional(),
-  blockedTagMask: z.number().int().min(0).default(0),
+  blockedTagMask: z.bigint().min(0n).default(0n),
   estimatedFootfall: z.coerce
     .number({ message: 'Required' })
     .int()

@@ -25,12 +25,12 @@ export async function pollUntilReady<T>(
       const elapsed = Date.now() - startTime;
 
       if (elapsed >= timeout) {
-        throw error;
         console.log(
           `${resourceName} could not be fetched after ${timeout}ms. ` +
             `The transaction may have succeeded, but the account is not yet queryable. ` +
             `Please refresh the page to try again.`
         );
+        throw error;
       }
 
       // Wait before retrying
