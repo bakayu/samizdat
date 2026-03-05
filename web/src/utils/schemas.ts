@@ -21,10 +21,11 @@ export const createCampaignSchema = z.object({
         .filter(Boolean)
     )
     .refine(arr => arr.length <= 10, 'Max 10 CIDs')
-    .refine(arr => arr.every(s => s.length >= 10), 'Each CID must be at least 10 characters'),
-  bountyPerPlay: z.coerce
-    .number({ message: 'Required' })
-    .positive('Must be positive'),
+    .refine(
+      arr => arr.every(s => s.length >= 10),
+      'Each CID must be at least 10 characters'
+    ),
+  bountyPerPlay: z.coerce.number({ message: 'Required' }).positive('Must be positive'),
   totalPlays: z.coerce
     .number({ message: 'Required' })
     .int('Must be an integer')
@@ -110,9 +111,7 @@ export type UpdateNodeSettingsForm = z.infer<typeof updateNodeSettingsSchema>;
 // --- Fund Campaign ---
 
 export const fundCampaignSchema = z.object({
-  amount: z.coerce
-    .number({ message: 'Required' })
-    .positive('Must be positive'),
+  amount: z.coerce.number({ message: 'Required' }).positive('Must be positive'),
 });
 
 export type FundCampaignForm = z.infer<typeof fundCampaignSchema>;

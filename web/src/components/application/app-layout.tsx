@@ -1,12 +1,7 @@
 import type { FC } from 'react';
 import { Link, Outlet, useLocation } from 'react-router';
 
-import {
-  Globe05,
-  Monitor04,
-  Send01,
-  Signal01,
-} from '@untitledui/icons';
+import { Globe05, Monitor04, Send01, Signal01 } from '@untitledui/icons';
 
 import { ConnectWalletMenu } from '@/components/application/connect-wallet-menu';
 import { cx } from '@/utils/cx';
@@ -45,9 +40,7 @@ export function AppLayout() {
             <ul className="flex items-center gap-1">
               {NAV_ITEMS.map(item => {
                 const isActive =
-                  item.href === '/'
-                    ? pathname === '/'
-                    : pathname.startsWith(item.href);
+                  item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
 
                 return (
                   <li key={item.href}>
@@ -83,9 +76,7 @@ export function AppLayout() {
       <footer className="border-t border-secondary py-6">
         <div className="mx-auto flex max-w-360 items-center justify-between px-4 text-xs text-quaternary md:px-8">
           <span className="font-mono">SAMIZDAT PROTOCOL</span>
-          <span className="font-mono">
-            SOLANA DEVNET • {new Date().getFullYear()}
-          </span>
+          <span className="font-mono">SOLANA DEVNET • {new Date().getFullYear()}</span>
         </div>
       </footer>
     </div>

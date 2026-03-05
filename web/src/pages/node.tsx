@@ -19,7 +19,6 @@ import { UiWalletAccount } from '@wallet-standard/react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Controller, useForm } from 'react-hook-form';
 
-
 import { Badge, BadgeWithDot } from '@/components/base/badges/badges';
 import { Button } from '@/components/base/buttons/button';
 import { Checkbox } from '@/components/base/checkbox/checkbox';
@@ -56,7 +55,6 @@ import {
   updateNodeSettingsSchema,
 } from '@/utils/schemas';
 
-
 // ============================================================================
 // Node Operator Dashboard
 // ============================================================================
@@ -83,7 +81,7 @@ function NodeStatusIndicator({ status }: { status: NodeStatus }) {
 
   return (
     <div className="flex items-center gap-2">
-      <span className={`pulse-dot inline-block size-2.5 rounded-full ${c.dotClass}`} />
+      <span className={`inline-block size-2.5 pulse-dot rounded-full ${c.dotClass}`} />
       <BadgeWithDot color={c.color} type="modern" size="sm">
         {c.label}
       </BadgeWithDot>
@@ -146,7 +144,9 @@ function CampaignCard({
       <div className="flex gap-4 text-xs text-tertiary">
         <div>
           <span className="text-quaternary">Remaining</span>
-          <p className="font-mono text-sm text-primary">{num(campaign.playsRemaining).toLocaleString()}</p>
+          <p className="font-mono text-sm text-primary">
+            {num(campaign.playsRemaining).toLocaleString()}
+          </p>
         </div>
         <div>
           <span className="text-quaternary">Total</span>
@@ -181,8 +181,8 @@ function CampaignCard({
       {geoBounds && (
         <p className="text-xs text-quaternary">
           <Globe05 className="mr-1 inline size-3" />
-          Geo: {geoToDecimal(geoBounds.minLat).toFixed(2)}°
-          - {geoToDecimal(geoBounds.maxLat).toFixed(2)}° N
+          Geo: {geoToDecimal(geoBounds.minLat).toFixed(2)}° -{' '}
+          {geoToDecimal(geoBounds.maxLat).toFixed(2)}° N
         </p>
       )}
 
@@ -255,12 +255,7 @@ function NodeSettingsPanel({
 }) {
   const [saving, setSaving] = useState(false);
 
-  const {
-    control,
-    handleSubmit,
-    watch,
-    setValue,
-  } = useForm<UpdateNodeSettingsForm>({
+  const { control, handleSubmit, watch, setValue } = useForm<UpdateNodeSettingsForm>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(updateNodeSettingsSchema) as any,
     defaultValues: {
@@ -306,40 +301,52 @@ function NodeSettingsPanel({
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <Controller name="latitude" control={control} render={({ field, fieldState }) => (
-          <Input
-            label="Latitude"
-            value={field.value?.toString() ?? ''}
-            onChange={field.onChange}
-            onBlur={field.onBlur}
-            hint={fieldState.error?.message ?? 'Degrees (e.g. 40.7128)'}
-            isInvalid={!!fieldState.error}
-            size="sm"
-          />
-        )} />
-        <Controller name="longitude" control={control} render={({ field, fieldState }) => (
-          <Input
-            label="Longitude"
-            value={field.value?.toString() ?? ''}
-            onChange={field.onChange}
-            onBlur={field.onBlur}
-            hint={fieldState.error?.message ?? 'Degrees (e.g. -74.0060)'}
-            isInvalid={!!fieldState.error}
-            size="sm"
-          />
-        )} />
-        <Controller name="estimatedFootfall" control={control} render={({ field, fieldState }) => (
-          <Input
-            label="Estimated Footfall"
-            value={field.value?.toString() ?? ''}
-            onChange={field.onChange}
-            onBlur={field.onBlur}
-            hint={fieldState.error?.message ?? 'Daily foot traffic estimate'}
-            isInvalid={!!fieldState.error}
-            size="sm"
-            type="number"
-          />
-        )} />
+        <Controller
+          name="latitude"
+          control={control}
+          render={({ field, fieldState }) => (
+            <Input
+              label="Latitude"
+              value={field.value?.toString() ?? ''}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              hint={fieldState.error?.message ?? 'Degrees (e.g. 40.7128)'}
+              isInvalid={!!fieldState.error}
+              size="sm"
+            />
+          )}
+        />
+        <Controller
+          name="longitude"
+          control={control}
+          render={({ field, fieldState }) => (
+            <Input
+              label="Longitude"
+              value={field.value?.toString() ?? ''}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              hint={fieldState.error?.message ?? 'Degrees (e.g. -74.0060)'}
+              isInvalid={!!fieldState.error}
+              size="sm"
+            />
+          )}
+        />
+        <Controller
+          name="estimatedFootfall"
+          control={control}
+          render={({ field, fieldState }) => (
+            <Input
+              label="Estimated Footfall"
+              value={field.value?.toString() ?? ''}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              hint={fieldState.error?.message ?? 'Daily foot traffic estimate'}
+              isInvalid={!!fieldState.error}
+              size="sm"
+              type="number"
+            />
+          )}
+        />
         <div>
           <p className="mb-1 text-sm font-medium text-secondary">Establishment Type</p>
           <span className="font-mono text-sm text-primary">{node.establishmentType}</span>
@@ -372,17 +379,14 @@ function NodeSettingsPanel({
         </div>
         <div className="md:col-span-2">
           <p className="mb-1 text-sm font-medium text-secondary">Landmarks</p>
-          <span className="text-sm text-tertiary">{node.landmarks.join(', ') || '—'}</span>
+          <span className="text-sm text-tertiary">
+            {node.landmarks.join(', ') || '—'}
+          </span>
         </div>
       </div>
 
       <div className="mt-4 flex justify-end">
-        <Button
-          size="sm"
-          iconLeading={Save01}
-          type="submit"
-          isDisabled={saving}
-        >
+        <Button size="sm" iconLeading={Save01} type="submit" isDisabled={saving}>
           {saving ? 'Saving...' : 'Save Changes'}
         </Button>
       </div>
@@ -398,7 +402,8 @@ function ConnectWalletPrompt() {
       <Monitor04 className="size-12 text-quaternary" />
       <h2 className="font-display text-display-xs text-primary">Connect Your Wallet</h2>
       <p className="max-w-sm text-center text-sm text-tertiary">
-        Connect a Solana wallet to access the node operator dashboard, manage your display node, and earn rewards.
+        Connect a Solana wallet to access the node operator dashboard, manage your display
+        node, and earn rewards.
       </p>
     </div>
   );
@@ -416,12 +421,7 @@ function RegisterNodePrompt({
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  const {
-    control,
-    handleSubmit,
-    watch,
-    setValue,
-  } = useForm<RegisterNodeForm>({
+  const { control, handleSubmit, watch, setValue } = useForm<RegisterNodeForm>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(registerNodeSchema) as any,
     defaultValues: {
@@ -453,19 +453,21 @@ function RegisterNodePrompt({
         screenSize: parseScreenSize(data.screenSize),
         resolution: { width: data.resolutionWidth, height: data.resolutionHeight },
         landmarks: data.landmarks
-          ? data.landmarks.split(',').map(s => s.trim()).filter(Boolean)
+          ? data.landmarks
+              .split(',')
+              .map(s => s.trim())
+              .filter(Boolean)
           : [],
         blockedTagMask: data.blockedTagMask,
         estimatedFootfall: data.estimatedFootfall,
         establishmentType: data.establishmentType,
       });
-      
+
       // Poll until the account is queryable
-      await pollUntilReady(
-        () => service.getNode(wallet.address),
-        { resourceName: 'Node account' }
-      );
-      
+      await pollUntilReady(() => service.getNode(wallet.address), {
+        resourceName: 'Node account',
+      });
+
       onRegistered();
     } catch (err) {
       console.error('Register node failed:', err);
@@ -479,9 +481,12 @@ function RegisterNodePrompt({
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
         <Monitor04 className="size-12 text-quaternary" />
-        <h2 className="font-display text-display-xs text-primary">Register a Display Node</h2>
+        <h2 className="font-display text-display-xs text-primary">
+          Register a Display Node
+        </h2>
         <p className="max-w-sm text-center text-sm text-tertiary">
-          Register your display node on-chain to start claiming campaigns and earning rewards.
+          Register your display node on-chain to start claiming campaigns and earning
+          rewards.
         </p>
         <Button size="md" iconLeading={Plus} onClick={() => setShowForm(true)}>
           Register Node
@@ -492,18 +497,56 @@ function RegisterNodePrompt({
 
   return (
     <div className="mx-auto max-w-xl py-8">
-      <h2 className="mb-6 font-display text-display-xs text-primary">Register Display Node</h2>
+      <h2 className="mb-6 font-display text-display-xs text-primary">
+        Register Display Node
+      </h2>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-        <Controller name="nodeId" control={control} render={({ field, fieldState }) => (
-          <Input label="Node ID" placeholder="1" type="number" value={field.value?.toString() ?? ''} onChange={field.onChange} hint={fieldState.error?.message ?? 'Unique numeric ID'} isInvalid={!!fieldState.error} />
-        )} />
+        <Controller
+          name="nodeId"
+          control={control}
+          render={({ field, fieldState }) => (
+            <Input
+              label="Node ID"
+              placeholder="1"
+              type="number"
+              value={field.value?.toString() ?? ''}
+              onChange={field.onChange}
+              hint={fieldState.error?.message ?? 'Unique numeric ID'}
+              isInvalid={!!fieldState.error}
+            />
+          )}
+        />
         <div className="grid grid-cols-2 gap-4">
-          <Controller name="latitude" control={control} render={({ field, fieldState }) => (
-            <Input label="Latitude" placeholder="40.7128" type="number" value={field.value?.toString() ?? ''} onChange={field.onChange} hint={fieldState.error?.message} isInvalid={!!fieldState.error} />
-          )} />
-          <Controller name="longitude" control={control} render={({ field, fieldState }) => (
-            <Input label="Longitude" placeholder="-74.0060" type="number" value={field.value?.toString() ?? ''} onChange={field.onChange} hint={fieldState.error?.message} isInvalid={!!fieldState.error} />
-          )} />
+          <Controller
+            name="latitude"
+            control={control}
+            render={({ field, fieldState }) => (
+              <Input
+                label="Latitude"
+                placeholder="40.7128"
+                type="number"
+                value={field.value?.toString() ?? ''}
+                onChange={field.onChange}
+                hint={fieldState.error?.message}
+                isInvalid={!!fieldState.error}
+              />
+            )}
+          />
+          <Controller
+            name="longitude"
+            control={control}
+            render={({ field, fieldState }) => (
+              <Input
+                label="Longitude"
+                placeholder="-74.0060"
+                type="number"
+                value={field.value?.toString() ?? ''}
+                onChange={field.onChange}
+                hint={fieldState.error?.message}
+                isInvalid={!!fieldState.error}
+              />
+            )}
+          />
         </div>
         <div>
           <p className="mb-2 text-sm font-medium text-secondary">Screen Size</p>
@@ -511,43 +554,123 @@ function RegisterNodePrompt({
             {SCREEN_SIZES.map(size => {
               const label = screenSizeLabel(size);
               return (
-                <Controller key={size} name="screenSize" control={control} render={({ field }) => (
-                  <Checkbox label={label} size="sm" isSelected={field.value === label} onChange={() => field.onChange(label)} />
-                )} />
+                <Controller
+                  key={size}
+                  name="screenSize"
+                  control={control}
+                  render={({ field }) => (
+                    <Checkbox
+                      label={label}
+                      size="sm"
+                      isSelected={field.value === label}
+                      onChange={() => field.onChange(label)}
+                    />
+                  )}
+                />
               );
             })}
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4">
-          <Controller name="resolutionWidth" control={control} render={({ field, fieldState }) => (
-            <Input label="Width (px)" placeholder="1920" type="number" value={field.value?.toString() ?? ''} onChange={field.onChange} hint={fieldState.error?.message} isInvalid={!!fieldState.error} />
-          )} />
-          <Controller name="resolutionHeight" control={control} render={({ field, fieldState }) => (
-            <Input label="Height (px)" placeholder="1080" type="number" value={field.value?.toString() ?? ''} onChange={field.onChange} hint={fieldState.error?.message} isInvalid={!!fieldState.error} />
-          )} />
+          <Controller
+            name="resolutionWidth"
+            control={control}
+            render={({ field, fieldState }) => (
+              <Input
+                label="Width (px)"
+                placeholder="1920"
+                type="number"
+                value={field.value?.toString() ?? ''}
+                onChange={field.onChange}
+                hint={fieldState.error?.message}
+                isInvalid={!!fieldState.error}
+              />
+            )}
+          />
+          <Controller
+            name="resolutionHeight"
+            control={control}
+            render={({ field, fieldState }) => (
+              <Input
+                label="Height (px)"
+                placeholder="1080"
+                type="number"
+                value={field.value?.toString() ?? ''}
+                onChange={field.onChange}
+                hint={fieldState.error?.message}
+                isInvalid={!!fieldState.error}
+              />
+            )}
+          />
         </div>
-        <Controller name="estimatedFootfall" control={control} render={({ field, fieldState }) => (
-          <Input label="Estimated Footfall" placeholder="5000" type="number" value={field.value?.toString() ?? ''} onChange={field.onChange} hint={fieldState.error?.message ?? 'Daily foot traffic'} isInvalid={!!fieldState.error} />
-        )} />
-        <Controller name="establishmentType" control={control} render={({ field, fieldState }) => (
-          <Input label="Establishment Type" placeholder="Mall, Transit Hub" value={field.value ?? ''} onChange={field.onChange} hint={fieldState.error?.message} isInvalid={!!fieldState.error} />
-        )} />
-        <Controller name="landmarks" control={control} render={({ field }) => (
-          <Input label="Landmarks" placeholder="Times Square, Penn Station" value={field.value ?? ''} onChange={field.onChange} hint="Comma-separated nearby landmarks" />
-        )} />
+        <Controller
+          name="estimatedFootfall"
+          control={control}
+          render={({ field, fieldState }) => (
+            <Input
+              label="Estimated Footfall"
+              placeholder="5000"
+              type="number"
+              value={field.value?.toString() ?? ''}
+              onChange={field.onChange}
+              hint={fieldState.error?.message ?? 'Daily foot traffic'}
+              isInvalid={!!fieldState.error}
+            />
+          )}
+        />
+        <Controller
+          name="establishmentType"
+          control={control}
+          render={({ field, fieldState }) => (
+            <Input
+              label="Establishment Type"
+              placeholder="Mall, Transit Hub"
+              value={field.value ?? ''}
+              onChange={field.onChange}
+              hint={fieldState.error?.message}
+              isInvalid={!!fieldState.error}
+            />
+          )}
+        />
+        <Controller
+          name="landmarks"
+          control={control}
+          render={({ field }) => (
+            <Input
+              label="Landmarks"
+              placeholder="Times Square, Penn Station"
+              value={field.value ?? ''}
+              onChange={field.onChange}
+              hint="Comma-separated nearby landmarks"
+            />
+          )}
+        />
         <div>
           <p className="mb-2 text-sm font-medium text-secondary">Blocked Tags</p>
           <div className="flex flex-wrap gap-3">
             {TAG_BITS.map(({ bit, label }) => {
               const bitNum = Number(bit);
               return (
-                <Checkbox key={bitNum} label={label} size="sm" isSelected={(blockedTagMask & bitNum) !== 0} onChange={() => toggleTag(bitNum)} />
+                <Checkbox
+                  key={bitNum}
+                  label={label}
+                  size="sm"
+                  isSelected={(blockedTagMask & bitNum) !== 0}
+                  onChange={() => toggleTag(bitNum)}
+                />
               );
             })}
           </div>
         </div>
         <div className="flex justify-end gap-3 border-t border-secondary pt-4">
-          <Button size="md" color="secondary" type="button" onClick={() => setShowForm(false)}>Cancel</Button>
+          <Button
+            size="md"
+            color="secondary"
+            type="button"
+            onClick={() => setShowForm(false)}
+          >
+            Cancel
+          </Button>
           <Button size="md" iconLeading={Plus} type="submit" isDisabled={submitting}>
             {submitting ? 'Registering...' : 'Register Node'}
           </Button>
@@ -632,7 +755,11 @@ function NodeDashboardContent() {
   if (!node) {
     return (
       <div className="mx-auto max-w-360 px-4 py-8 md:px-8">
-        <RegisterNodePrompt service={service} wallet={selectedWalletAccount!} onRegistered={fetchData} />
+        <RegisterNodePrompt
+          service={service}
+          wallet={selectedWalletAccount!}
+          onRegistered={fetchData}
+        />
       </div>
     );
   }
@@ -657,12 +784,12 @@ function NodeDashboardContent() {
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3">
-          <h1 className="font-display text-display-sm text-primary">
-            Node Operator
-          </h1>
+          <h1 className="font-display text-display-sm text-primary">Node Operator</h1>
           <NodeStatusIndicator status={node.status} />
         </div>
-        <p className="mt-1 font-mono text-xs text-quaternary">{shortenAddress(node.address, 8)}</p>
+        <p className="mt-1 font-mono text-xs text-quaternary">
+          {shortenAddress(node.address, 8)}
+        </p>
       </div>
 
       {/* Stats */}
@@ -702,9 +829,7 @@ function NodeDashboardContent() {
             <ArrowUp className="size-4 text-success-500" />
             Uptime
           </div>
-          <p className="mt-2 font-mono text-2xl font-semibold text-success-500">
-            99.7%
-          </p>
+          <p className="mt-2 font-mono text-2xl font-semibold text-success-500">99.7%</p>
         </div>
       </div>
 
@@ -778,7 +903,9 @@ function NodeDashboardContent() {
             ) : (
               <div className="flex flex-col items-center gap-2 py-12 text-tertiary">
                 <Clock className="size-8" />
-                <p className="text-sm">No play history yet — claim a campaign to get started</p>
+                <p className="text-sm">
+                  No play history yet — claim a campaign to get started
+                </p>
               </div>
             )}
           </motion.div>

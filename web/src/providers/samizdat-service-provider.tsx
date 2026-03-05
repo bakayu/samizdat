@@ -2,7 +2,6 @@ import { createContext, useContext, useMemo, type ReactNode } from 'react';
 
 import { useWalletAccountTransactionSendingSigner } from '@solana/react';
 
-
 import { ChainContext } from '@/context/chain-context';
 import { ConnectionContext } from '@/context/connection-context';
 import { SelectedWalletAccountContext } from '@/context/selected-wallet-account-context';
@@ -33,13 +32,15 @@ export interface SamizdatService {
   getPublisher(authority: string): Promise<WithAddress<PublisherAccount> | null>;
 
   // Campaigns
-  createCampaign(args: CreateCampaignInstructionDataArgs): Promise<WithAddress<CampaignAccount>>;
+  createCampaign(
+    args: CreateCampaignInstructionDataArgs
+  ): Promise<WithAddress<CampaignAccount>>;
   getCampaigns(): Promise<WithAddress<CampaignAccount>[]>;
   getCampaign(address: string): Promise<WithAddress<CampaignAccount> | null>;
   fundCampaign(campaignAddress: string, amount: number): Promise<void>;
   updateCampaign(
     campaignAddress: string,
-    args: UpdateCampaignInstructionDataArgs,
+    args: UpdateCampaignInstructionDataArgs
   ): Promise<void>;
   addCidsToCampaign(campaignAddress: string, newCids: string[]): Promise<void>;
   closeCampaign(campaignAddress: string): Promise<void>;
@@ -49,14 +50,14 @@ export interface SamizdatService {
   getNode(authority: string): Promise<WithAddress<NodeAccount> | null>;
   updateNodeMetadata(
     nodeAddress: string,
-    args: UpdateNodeMetadataInstructionDataArgs,
+    args: UpdateNodeMetadataInstructionDataArgs
   ): Promise<void>;
 
   // Play Cycle
   claimCampaign(
     campaignAddress: string,
     nodeAddress: string,
-    cidIndex: number,
+    cidIndex: number
   ): Promise<WithAddress<PlayRecord>>;
   confirmPlay(playRecordAddress: string): Promise<void>;
   timeoutPlay(playRecordAddress: string): Promise<void>;
@@ -100,11 +101,7 @@ export function SamizdatServiceProvider({
  * When no wallet is connected, the service context is null (callers should
  * check via useSamizdatService which will throw if used without a wallet).
  */
-export function SamizdatServiceProviderConnected({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export function SamizdatServiceProviderConnected({ children }: { children: ReactNode }) {
   const [selectedWalletAccount] = useContext(SelectedWalletAccountContext);
   const { chain } = useContext(ChainContext);
   const { connection } = useContext(ConnectionContext);
@@ -119,10 +116,7 @@ export function SamizdatServiceProviderConnected({
   }
 
   return (
-    <SamizdatServiceProviderInner
-      chain={chain}
-      connection={connection}
-    >
+    <SamizdatServiceProviderInner chain={chain} connection={connection}>
       {children}
     </SamizdatServiceProviderInner>
   );

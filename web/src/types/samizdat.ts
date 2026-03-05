@@ -80,8 +80,7 @@ export const CAMPAIGN_STATUSES = [
 ] as const;
 
 /** Numeric CampaignStatus → human label. */
-export const campaignStatusLabel = (s: CampaignStatus): string =>
-  CampaignStatus[s];
+export const campaignStatusLabel = (s: CampaignStatus): string => CampaignStatus[s];
 
 // ─── Content-tag bitmask helpers ────────────────────────────────────────────
 

@@ -40,7 +40,6 @@ import {
   signAndSendTransactionMessageWithSigners,
 } from '@solana/kit';
 
-
 import type { SamizdatService } from '@/providers/samizdat-service-provider';
 import type { WithAddress } from '@/types/samizdat';
 
@@ -61,7 +60,7 @@ import type { Connection } from 'solana-kite';
 export class SamizdatBlockchainService implements SamizdatService {
   constructor(
     private connection: Connection,
-    private signer: TransactionSendingSigner,
+    private signer: TransactionSendingSigner
   ) {}
 
   /** Widen to TransactionSigner for Codama instruction account metas. */
@@ -71,14 +70,18 @@ export class SamizdatBlockchainService implements SamizdatService {
 
   /** Build a v0 tx and let the wallet sign + send via TransactionSendingSigner. */
   private async sendIx(
-    instructions: Parameters<Connection['sendTransactionFromInstructionsWithWalletApp']>[0]['instructions'],
+    instructions: Parameters<
+      Connection['sendTransactionFromInstructionsWithWalletApp']
+    >[0]['instructions']
   ) {
-    const { value: latestBlockhash } = await this.connection.rpc.getLatestBlockhash().send();
+    const { value: latestBlockhash } = await this.connection.rpc
+      .getLatestBlockhash()
+      .send();
     const txMsg = pipe(
       createTransactionMessage({ version: 0 }),
-      (m) => setTransactionMessageFeePayerSigner(this.signer, m),
-      (m) => setTransactionMessageLifetimeUsingBlockhash(latestBlockhash, m),
-      (m) => appendTransactionMessageInstructions(instructions, m),
+      m => setTransactionMessageFeePayerSigner(this.signer, m),
+      m => setTransactionMessageLifetimeUsingBlockhash(latestBlockhash, m),
+      m => appendTransactionMessageInstructions(instructions, m)
     );
     await signAndSendTransactionMessageWithSigners(txMsg);
   }
@@ -88,18 +91,18 @@ export class SamizdatBlockchainService implements SamizdatService {
   async registerPublisher(): Promise<WithAddress<PublisherAccount>> {
     const ix = await getRegisterPublisherInstructionAsync({ authority: this.authority });
     await this.sendIx([ix]);
-    const { pda } = await this.connection.getPDAAndBump(
-      SAMIZDAT_PROGRAM_ADDRESS,
-      ['publisher', this.signer.address],
-    );
+    const { pda } = await this.connection.getPDAAndBump(SAMIZDAT_PROGRAM_ADDRESS, [
+      'publisher',
+      this.signer.address,
+    ]);
     return this.fetchPublisher(pda);
   }
 
   async getPublisher(authority: string): Promise<WithAddress<PublisherAccount> | null> {
-    const { pda } = await this.connection.getPDAAndBump(
-      SAMIZDAT_PROGRAM_ADDRESS,
-      ['publisher', authority],
-    );
+    const { pda } = await this.connection.getPDAAndBump(SAMIZDAT_PROGRAM_ADDRESS, [
+      'publisher',
+      authority,
+    ]);
     try {
       return await this.fetchPublisher(pda);
     } catch {
@@ -115,7 +118,9 @@ export class SamizdatBlockchainService implements SamizdatService {
 
   // ─── Campaigns ──────────────────────────────────────────────────────────
 
-  async createCampaign(args: CreateCampaignInstructionDataArgs): Promise<WithAddress<CampaignAccount>> {
+  async createCampaign(
+    args: CreateCampaignInstructionDataArgs
+  ): Promise<WithAddress<CampaignAccount>> {
     const ix = await getCreateCampaignInstructionAsync({
       authority: this.authority,
       ...args,
@@ -124,11 +129,11 @@ export class SamizdatBlockchainService implements SamizdatService {
 
     const { pda: publisherPDA } = await this.connection.getPDAAndBump(
       SAMIZDAT_PROGRAM_ADDRESS,
-      ['publisher', this.signer.address],
+      ['publisher', this.signer.address]
     );
     const { pda: campaignPDA } = await this.connection.getPDAAndBump(
       SAMIZDAT_PROGRAM_ADDRESS,
-      ['campaign', publisherPDA, BigInt(args.campaignId)],
+      ['campaign', publisherPDA, BigInt(args.campaignId)]
     );
     return this.fetchCampaign(campaignPDA);
   }
@@ -137,12 +142,15 @@ export class SamizdatBlockchainService implements SamizdatService {
     const getAll = this.connection.getAccountsFactory(
       SAMIZDAT_PROGRAM_ADDRESS,
       CAMPAIGN_ACCOUNT_DISCRIMINATOR,
-      getCampaignAccountDecoder(),
+      getCampaignAccountDecoder()
     );
     const accounts = await getAll();
     return accounts
-      .filter((a) => a.exists)
-      .map((a) => ({ ...(a as { data: CampaignAccount }).data, address: String(a.address) }));
+      .filter(a => a.exists)
+      .map(a => ({
+        ...(a as { data: CampaignAccount }).data,
+        address: String(a.address),
+      }));
   }
 
   async getCampaign(addr: string): Promise<WithAddress<CampaignAccount> | null> {
@@ -164,7 +172,7 @@ export class SamizdatBlockchainService implements SamizdatService {
 
   async updateCampaign(
     campaignAddress: string,
-    args: UpdateCampaignInstructionDataArgs,
+    args: UpdateCampaignInstructionDataArgs
   ): Promise<void> {
     const ix = await getUpdateCampaignInstructionAsync({
       authority: this.authority,
@@ -193,13 +201,19 @@ export class SamizdatBlockchainService implements SamizdatService {
 
   // ─── Node Operator ──────────────────────────────────────────────────────
 
-  async registerNode(args: RegisterNodeInstructionDataArgs): Promise<WithAddress<NodeAccount>> {
-    const ix = await getRegisterNodeInstructionAsync({ authority: this.authority, ...args });
+  async registerNode(
+    args: RegisterNodeInstructionDataArgs
+  ): Promise<WithAddress<NodeAccount>> {
+    const ix = await getRegisterNodeInstructionAsync({
+      authority: this.authority,
+      ...args,
+    });
     await this.sendIx([ix]);
-    const { pda } = await this.connection.getPDAAndBump(
-      SAMIZDAT_PROGRAM_ADDRESS,
-      ['node_account', this.signer.address, BigInt(args.nodeId)],
-    );
+    const { pda } = await this.connection.getPDAAndBump(SAMIZDAT_PROGRAM_ADDRESS, [
+      'node_account',
+      this.signer.address,
+      BigInt(args.nodeId),
+    ]);
     return this.fetchNode(pda);
   }
 
@@ -207,11 +221,11 @@ export class SamizdatBlockchainService implements SamizdatService {
     const getAll = this.connection.getAccountsFactory(
       SAMIZDAT_PROGRAM_ADDRESS,
       NODE_ACCOUNT_DISCRIMINATOR,
-      getNodeAccountDecoder(),
+      getNodeAccountDecoder()
     );
     const accounts = await getAll();
     const match = accounts.find(
-      (a) => a.exists && (a as { data: NodeAccount }).data.authority === authority,
+      a => a.exists && (a as { data: NodeAccount }).data.authority === authority
     );
     if (!match || !match.exists) return null;
     return { ...(match as { data: NodeAccount }).data, address: String(match.address) };
@@ -219,7 +233,7 @@ export class SamizdatBlockchainService implements SamizdatService {
 
   async updateNodeMetadata(
     nodeAddress: string,
-    args: UpdateNodeMetadataInstructionDataArgs,
+    args: UpdateNodeMetadataInstructionDataArgs
   ): Promise<void> {
     const ix = getUpdateNodeMetadataInstruction({
       authority: this.authority,
@@ -234,7 +248,7 @@ export class SamizdatBlockchainService implements SamizdatService {
   async claimCampaign(
     campaignAddress: string,
     nodeAddress: string,
-    cidIndex: number,
+    cidIndex: number
   ): Promise<WithAddress<PlayRecord>> {
     const claimNonce = BigInt(Date.now());
     const ix = await getClaimCampaignInstructionAsync({
@@ -246,10 +260,12 @@ export class SamizdatBlockchainService implements SamizdatService {
     });
     await this.sendIx([ix]);
 
-    const { pda } = await this.connection.getPDAAndBump(
-      SAMIZDAT_PROGRAM_ADDRESS,
-      ['play_record', campaignAddress, nodeAddress, claimNonce],
-    );
+    const { pda } = await this.connection.getPDAAndBump(SAMIZDAT_PROGRAM_ADDRESS, [
+      'play_record',
+      campaignAddress,
+      nodeAddress,
+      claimNonce,
+    ]);
     return this.fetchPlayRecord(pda);
   }
 
@@ -279,12 +295,12 @@ export class SamizdatBlockchainService implements SamizdatService {
     const getAll = this.connection.getAccountsFactory(
       SAMIZDAT_PROGRAM_ADDRESS,
       PLAY_RECORD_DISCRIMINATOR,
-      getPlayRecordDecoder(),
+      getPlayRecordDecoder()
     );
     const accounts = await getAll();
     return accounts
-      .filter((a) => a.exists)
-      .map((a) => ({ ...(a as { data: PlayRecord }).data, address: String(a.address) }));
+      .filter(a => a.exists)
+      .map(a => ({ ...(a as { data: PlayRecord }).data, address: String(a.address) }));
   }
 
   // ─── Private helpers ────────────────────────────────────────────────────

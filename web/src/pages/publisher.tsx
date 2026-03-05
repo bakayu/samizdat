@@ -96,7 +96,9 @@ function CampaignRow({
       layout
     >
       <td className="px-4 py-3">
-        <span className="font-mono text-sm text-primary">#{String(campaign.campaignId)}</span>
+        <span className="font-mono text-sm text-primary">
+          #{String(campaign.campaignId)}
+        </span>
       </td>
       <td className="px-4 py-3">
         <StatusBadge status={campaign.status} />
@@ -195,9 +197,7 @@ function CampaignDetail({
               </h2>
               <StatusBadge status={campaign.status} />
             </div>
-            <p className="mt-1 font-mono text-xs text-quaternary">
-              {campaign.address}
-            </p>
+            <p className="mt-1 font-mono text-xs text-quaternary">{campaign.address}</p>
           </div>
           <Button size="sm" color="tertiary" onClick={onClose}>
             ✕
@@ -222,7 +222,8 @@ function CampaignDetail({
           <div className="rounded-lg border border-secondary bg-secondary p-4">
             <p className="text-xs text-tertiary">Total Spent</p>
             <p className="mt-1 font-mono text-lg font-semibold text-primary">
-              {lamportsToSol(num(campaign.playsCompleted) * num(campaign.bountyPerPlay))} SOL
+              {lamportsToSol(num(campaign.playsCompleted) * num(campaign.bountyPerPlay))}{' '}
+              SOL
             </p>
           </div>
         </div>
@@ -333,9 +334,7 @@ function CampaignDetail({
               iconLeading={Trash01}
               isDisabled={busy}
               onClick={() =>
-                doAction('Close campaign', () =>
-                  service.closeCampaign(campaign.address)
-                )
+                doAction('Close campaign', () => service.closeCampaign(campaign.address))
               }
             >
               Close
@@ -364,12 +363,11 @@ function CreateCampaignModal({
 }) {
   const [submitting, setSubmitting] = useState(false);
 
-  const {
-    control,
-    handleSubmit,
-    watch,
-    setValue,
-  } = useForm<CreateCampaignFormInput, unknown, CreateCampaignForm>({
+  const { control, handleSubmit, watch, setValue } = useForm<
+    CreateCampaignFormInput,
+    unknown,
+    CreateCampaignForm
+  >({
     resolver: zodResolver(createCampaignSchema),
     defaultValues: {
       campaignId: undefined,
@@ -395,19 +393,32 @@ function CreateCampaignModal({
 
   const toggleTag = (bit: number) => setValue('tagMask', tagMask ^ bit);
   const toggleScreenSize = (size: string) => {
-    setValue('screenSizes', screenSizes.includes(size) ? screenSizes.filter(s => s !== size) : [...screenSizes, size]);
+    setValue(
+      'screenSizes',
+      screenSizes.includes(size)
+        ? screenSizes.filter(s => s !== size)
+        : [...screenSizes, size]
+    );
   };
 
   const onSubmit = async (data: CreateCampaignForm) => {
     setSubmitting(true);
     try {
       const hasGeo =
-        data.geoBoundsMinLat !== '' && data.geoBoundsMaxLat !== '' &&
-        data.geoBoundsMinLon !== '' && data.geoBoundsMaxLon !== '';
+        data.geoBoundsMinLat !== '' &&
+        data.geoBoundsMaxLat !== '' &&
+        data.geoBoundsMinLon !== '' &&
+        data.geoBoundsMaxLon !== '';
 
       const targetFilters: TargetFiltersArgs = {
-        minFootfall: data.minFootfall !== '' && data.minFootfall != null ? Number(data.minFootfall) : null,
-        maxFootfall: data.maxFootfall !== '' && data.maxFootfall != null ? Number(data.maxFootfall) : null,
+        minFootfall:
+          data.minFootfall !== '' && data.minFootfall != null
+            ? Number(data.minFootfall)
+            : null,
+        maxFootfall:
+          data.maxFootfall !== '' && data.maxFootfall != null
+            ? Number(data.maxFootfall)
+            : null,
         screenSizes: data.screenSizes.map(parseScreenSize),
         geoBounds: hasGeo
           ? {
@@ -418,10 +429,16 @@ function CreateCampaignModal({
             }
           : null,
         establishmentTypes: data.establishmentTypes
-          ? data.establishmentTypes.split(',').map(s => s.trim()).filter(Boolean)
+          ? data.establishmentTypes
+              .split(',')
+              .map(s => s.trim())
+              .filter(Boolean)
           : [],
         requiredLandmarks: data.requiredLandmarks
-          ? data.requiredLandmarks.split(',').map(s => s.trim()).filter(Boolean)
+          ? data.requiredLandmarks
+              .split(',')
+              .map(s => s.trim())
+              .filter(Boolean)
           : [],
       };
 
@@ -473,7 +490,9 @@ function CreateCampaignModal({
       >
         <div className="mb-6 flex items-center justify-between">
           <h2 className="font-display text-display-xs text-primary">Create Campaign</h2>
-          <Button size="sm" color="tertiary" onClick={onClose}>✕</Button>
+          <Button size="sm" color="tertiary" onClick={onClose}>
+            ✕
+          </Button>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
@@ -588,12 +607,34 @@ function CreateCampaignModal({
           <div className="rounded-lg border border-secondary bg-secondary p-4">
             <p className="mb-3 text-sm font-medium text-secondary">Target Filters</p>
             <div className="grid grid-cols-2 gap-4">
-              <Controller name="minFootfall" control={control} render={({ field }) => (
-                <Input label="Min Footfall" placeholder="0" type="number" size="sm" value={field.value?.toString() ?? ''} onChange={field.onChange} />
-              )} />
-              <Controller name="maxFootfall" control={control} render={({ field }) => (
-                <Input label="Max Footfall" placeholder="∞" type="number" size="sm" value={field.value?.toString() ?? ''} onChange={field.onChange} />
-              )} />
+              <Controller
+                name="minFootfall"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    label="Min Footfall"
+                    placeholder="0"
+                    type="number"
+                    size="sm"
+                    value={field.value?.toString() ?? ''}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+              <Controller
+                name="maxFootfall"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    label="Max Footfall"
+                    placeholder="∞"
+                    type="number"
+                    size="sm"
+                    value={field.value?.toString() ?? ''}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
             </div>
 
             <div className="mt-4">
@@ -602,43 +643,115 @@ function CreateCampaignModal({
                 {SCREEN_SIZES.map(size => {
                   const label = screenSizeLabel(size);
                   return (
-                    <Checkbox key={size} label={label} size="sm" isSelected={screenSizes.includes(label)} onChange={() => toggleScreenSize(label)} />
+                    <Checkbox
+                      key={size}
+                      label={label}
+                      size="sm"
+                      isSelected={screenSizes.includes(label)}
+                      onChange={() => toggleScreenSize(label)}
+                    />
                   );
                 })}
               </div>
             </div>
 
             <div className="mt-4 grid grid-cols-2 gap-4">
-              <Controller name="establishmentTypes" control={control} render={({ field }) => (
-                <Input label="Establishment Types" placeholder="Mall, Transit Hub" hint="Comma-separated" size="sm" value={field.value ?? ''} onChange={field.onChange} />
-              )} />
-              <Controller name="requiredLandmarks" control={control} render={({ field }) => (
-                <Input label="Required Landmarks" placeholder="Times Square" hint="Comma-separated" size="sm" value={field.value ?? ''} onChange={field.onChange} />
-              )} />
+              <Controller
+                name="establishmentTypes"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    label="Establishment Types"
+                    placeholder="Mall, Transit Hub"
+                    hint="Comma-separated"
+                    size="sm"
+                    value={field.value ?? ''}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+              <Controller
+                name="requiredLandmarks"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    label="Required Landmarks"
+                    placeholder="Times Square"
+                    hint="Comma-separated"
+                    size="sm"
+                    value={field.value ?? ''}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
             </div>
 
             <div className="mt-4">
-              <p className="mb-2 text-xs font-medium text-tertiary">Geo Bounds (decimal degrees)</p>
+              <p className="mb-2 text-xs font-medium text-tertiary">
+                Geo Bounds (decimal degrees)
+              </p>
               <div className="grid grid-cols-4 gap-2">
-                <Controller name="geoBoundsMinLat" control={control} render={({ field }) => (
-                  <Input placeholder="Min Lat" size="sm" type="number" value={field.value?.toString() ?? ''} onChange={field.onChange} />
-                )} />
-                <Controller name="geoBoundsMaxLat" control={control} render={({ field }) => (
-                  <Input placeholder="Max Lat" size="sm" type="number" value={field.value?.toString() ?? ''} onChange={field.onChange} />
-                )} />
-                <Controller name="geoBoundsMinLon" control={control} render={({ field }) => (
-                  <Input placeholder="Min Lon" size="sm" type="number" value={field.value?.toString() ?? ''} onChange={field.onChange} />
-                )} />
-                <Controller name="geoBoundsMaxLon" control={control} render={({ field }) => (
-                  <Input placeholder="Max Lon" size="sm" type="number" value={field.value?.toString() ?? ''} onChange={field.onChange} />
-                )} />
+                <Controller
+                  name="geoBoundsMinLat"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      placeholder="Min Lat"
+                      size="sm"
+                      type="number"
+                      value={field.value?.toString() ?? ''}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
+                <Controller
+                  name="geoBoundsMaxLat"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      placeholder="Max Lat"
+                      size="sm"
+                      type="number"
+                      value={field.value?.toString() ?? ''}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
+                <Controller
+                  name="geoBoundsMinLon"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      placeholder="Min Lon"
+                      size="sm"
+                      type="number"
+                      value={field.value?.toString() ?? ''}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
+                <Controller
+                  name="geoBoundsMaxLon"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      placeholder="Max Lon"
+                      size="sm"
+                      type="number"
+                      value={field.value?.toString() ?? ''}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
               </div>
             </div>
           </div>
 
           {/* Submit */}
           <div className="flex justify-end gap-3 border-t border-secondary pt-4">
-            <Button size="md" color="secondary" onClick={onClose} type="button">Cancel</Button>
+            <Button size="md" color="secondary" onClick={onClose} type="button">
+              Cancel
+            </Button>
             <Button size="md" iconLeading={Send01} type="submit" isDisabled={submitting}>
               {submitting ? 'Creating...' : 'Create Campaign'}
             </Button>
@@ -657,7 +770,8 @@ function ConnectWalletPrompt() {
       <Eye className="size-12 text-quaternary" />
       <h2 className="font-display text-display-xs text-primary">Connect Your Wallet</h2>
       <p className="max-w-sm text-center text-sm text-tertiary">
-        Connect a Solana wallet to access the publisher dashboard, create campaigns, and manage your content distribution.
+        Connect a Solana wallet to access the publisher dashboard, create campaigns, and
+        manage your content distribution.
       </p>
     </div>
   );
@@ -679,10 +793,9 @@ function RegisterPublisherPrompt({
     try {
       await service.registerPublisher();
       // Poll until the account is queryable
-      await pollUntilReady(
-        () => service.getPublisher(wallet.address),
-        { resourceName: 'Publisher account' }
-      );
+      await pollUntilReady(() => service.getPublisher(wallet.address), {
+        resourceName: 'Publisher account',
+      });
       onRegistered();
     } catch (err) {
       console.error('Register publisher failed:', err);
@@ -697,7 +810,8 @@ function RegisterPublisherPrompt({
       <Send01 className="size-12 text-quaternary" />
       <h2 className="font-display text-display-xs text-primary">Register as Publisher</h2>
       <p className="max-w-sm text-center text-sm text-tertiary">
-        You need to register a publisher account before creating campaigns. This is a one-time on-chain registration.
+        You need to register a publisher account before creating campaigns. This is a
+        one-time on-chain registration.
       </p>
       <Button size="md" iconLeading={Plus} onClick={handleRegister} isDisabled={busy}>
         {busy ? 'Registering...' : 'Register Publisher'}
@@ -721,10 +835,14 @@ export function PublisherDashboardPage() {
     );
   }
 
-  return <PublisherDashboardContent selectedWallet={selectedWalletAccount}/>;
+  return <PublisherDashboardContent selectedWallet={selectedWalletAccount} />;
 }
 
-function PublisherDashboardContent({ selectedWallet }: { selectedWallet: UiWalletAccount }) {
+function PublisherDashboardContent({
+  selectedWallet,
+}: {
+  selectedWallet: UiWalletAccount;
+}) {
   const service = useSamizdatService();
 
   const [publisher, setPublisher] = useState<WithAddress<PublisherAccount> | null>(null);
@@ -732,7 +850,8 @@ function PublisherDashboardContent({ selectedWallet }: { selectedWallet: UiWalle
   const [loading, setLoading] = useState(true);
   const [checkedPublisher, setCheckedPublisher] = useState(false);
 
-  const [selectedCampaign, setSelectedCampaign] = useState<WithAddress<CampaignAccount> | null>(null);
+  const [selectedCampaign, setSelectedCampaign] =
+    useState<WithAddress<CampaignAccount> | null>(null);
   const [showCreate, setShowCreate] = useState(false);
   const [statusFilter, setStatusFilter] = useState<CampaignStatus | 'all'>('all');
 
@@ -774,16 +893,18 @@ function PublisherDashboardContent({ selectedWallet }: { selectedWallet: UiWalle
   if (!publisher) {
     return (
       <div className="mx-auto max-w-360 px-4 py-8 md:px-8">
-        <RegisterPublisherPrompt service={service} wallet={selectedWallet!} onRegistered={fetchData} />
+        <RegisterPublisherPrompt
+          service={service}
+          wallet={selectedWallet!}
+          onRegistered={fetchData}
+        />
       </div>
     );
   }
 
   // --- Computed stats ---
   const filteredCampaigns =
-    statusFilter === 'all'
-      ? campaigns
-      : campaigns.filter(c => c.status === statusFilter);
+    statusFilter === 'all' ? campaigns : campaigns.filter(c => c.status === statusFilter);
 
   const statusIcon = {
     [CampaignStatus.Active]: CheckCircle,
@@ -792,9 +913,14 @@ function PublisherDashboardContent({ selectedWallet }: { selectedWallet: UiWalle
     [CampaignStatus.Closed]: XCircle,
   };
 
-  const activeCampaigns = campaigns.filter(c => c.status === CampaignStatus.Active).length;
+  const activeCampaigns = campaigns.filter(
+    c => c.status === CampaignStatus.Active
+  ).length;
   const totalPlays = campaigns.reduce((s, c) => s + num(c.playsCompleted), 0);
-  const totalSpent = campaigns.reduce((s, c) => s + num(c.playsCompleted) * num(c.bountyPerPlay), 0);
+  const totalSpent = campaigns.reduce(
+    (s, c) => s + num(c.playsCompleted) * num(c.bountyPerPlay),
+    0
+  );
 
   return (
     <div className="mx-auto max-w-360 px-4 py-8 md:px-8">
@@ -865,10 +991,11 @@ function PublisherDashboardContent({ selectedWallet }: { selectedWallet: UiWalle
                 : 'text-tertiary hover:text-secondary'
             }`}
           >
-            {status !== 'all' && (() => {
-              const Icon = statusIcon[status];
-              return <Icon className="size-3.5" />;
-            })()}
+            {status !== 'all' &&
+              (() => {
+                const Icon = statusIcon[status];
+                return <Icon className="size-3.5" />;
+              })()}
             {status === 'all' ? 'All' : campaignStatusLabel(status)}
           </button>
         ))}

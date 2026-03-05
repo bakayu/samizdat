@@ -42,7 +42,10 @@ interface StatusEvent {
 function NoSignalScreen() {
   return (
     <div className="flex h-full flex-col items-center justify-center gap-4">
-      <WifiOff className="size-16 text-gray-600" style={{ animation: 'flicker 3s ease-in-out infinite' }} />
+      <WifiOff
+        className="size-16 text-gray-600"
+        style={{ animation: 'flicker 3s ease-in-out infinite' }}
+      />
       <div className="text-center">
         <p
           className="font-mono text-2xl font-bold tracking-widest text-gray-500"
@@ -50,9 +53,7 @@ function NoSignalScreen() {
         >
           NO SIGNAL
         </p>
-        <p className="mt-2 font-mono text-xs text-gray-600">
-          AWAITING CAMPAIGN CLAIM
-        </p>
+        <p className="mt-2 font-mono text-xs text-gray-600">AWAITING CAMPAIGN CLAIM</p>
       </div>
     </div>
   );
@@ -238,7 +239,9 @@ export function DigitalTwinPage() {
       <div className="mx-auto max-w-360 px-4 py-8 md:px-8">
         <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
           <Monitor04 className="size-12 text-quaternary" />
-          <h2 className="font-display text-display-xs text-primary">Connect Your Wallet</h2>
+          <h2 className="font-display text-display-xs text-primary">
+            Connect Your Wallet
+          </h2>
           <p className="max-w-sm text-center text-sm text-tertiary">
             Connect a Solana wallet to access the Digital Twin simulator.
           </p>
@@ -255,11 +258,14 @@ function DigitalTwinContent() {
   const [selectedWalletAccount] = useContext(SelectedWalletAccountContext);
 
   const [node, setNode] = useState<WithAddress<NodeAccount> | null>(null);
-  const [availableCampaigns, setAvailableCampaigns] = useState<WithAddress<CampaignAccount>[]>([]);
+  const [availableCampaigns, setAvailableCampaigns] = useState<
+    WithAddress<CampaignAccount>[]
+  >([]);
   const [loading, setLoading] = useState(true);
 
   const [screenState, setScreenState] = useState<ScreenState>('idle');
-  const [activeCampaign, setActiveCampaign] = useState<WithAddress<CampaignAccount> | null>(null);
+  const [activeCampaign, setActiveCampaign] =
+    useState<WithAddress<CampaignAccount> | null>(null);
   const [events, setEvents] = useState<StatusEvent[]>([]);
   const [countdown, setCountdown] = useState<number | null>(null);
   const eventId = useRef(0);
@@ -284,16 +290,13 @@ function DigitalTwinContent() {
     fetchData();
   }, [fetchData]);
 
-  const addEvent = useCallback(
-    (message: string, type: StatusEvent['type'] = 'info') => {
-      eventId.current += 1;
-      setEvents(prev => [
-        ...prev,
-        { id: eventId.current, message, type, timestamp: new Date() },
-      ]);
-    },
-    []
-  );
+  const addEvent = useCallback((message: string, type: StatusEvent['type'] = 'info') => {
+    eventId.current += 1;
+    setEvents(prev => [
+      ...prev,
+      { id: eventId.current, message, type, timestamp: new Date() },
+    ]);
+  }, []);
 
   const handleClaim = useCallback(
     async (campaign: WithAddress<CampaignAccount>) => {
@@ -306,20 +309,13 @@ function DigitalTwinContent() {
       addEvent(`CID: ${campaign.cids[0]?.slice(0, 20)}...`, 'info');
 
       try {
-        const playRecord = await service.claimCampaign(
-          campaign.address,
-          node.address,
-          0
-        );
+        const playRecord = await service.claimCampaign(campaign.address, node.address, 0);
         addEvent('Claim TX confirmed on-chain', 'success');
 
         // Transition to playing
         setScreenState('playing');
         addEvent('Content loaded — now playing', 'success');
-        addEvent(
-          `Bounty: ${lamportsToSol(campaign.bountyPerPlay)} SOL per play`,
-          'info'
-        );
+        addEvent(`Bounty: ${lamportsToSol(campaign.bountyPerPlay)} SOL per play`, 'info');
 
         // Start 5-second countdown
         let remaining = 5;
@@ -393,9 +389,12 @@ function DigitalTwinContent() {
       <div className="mx-auto max-w-360 px-4 py-8 md:px-8">
         <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
           <Monitor04 className="size-12 text-quaternary" />
-          <h2 className="font-display text-display-xs text-primary">No Node Registered</h2>
+          <h2 className="font-display text-display-xs text-primary">
+            No Node Registered
+          </h2>
           <p className="max-w-sm text-center text-sm text-tertiary">
-            Register a display node first on the Node Operator page before using the Digital Twin.
+            Register a display node first on the Node Operator page before using the
+            Digital Twin.
           </p>
         </div>
       </div>
@@ -500,8 +499,8 @@ function DigitalTwinContent() {
           {/* Screen controls */}
           <div className="mt-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="pulse-dot inline-block size-2 rounded-full bg-brand-500" />
-              <span className="font-mono text-xs uppercase text-tertiary">
+              <span className="inline-block size-2 pulse-dot rounded-full bg-brand-500" />
+              <span className="font-mono text-xs text-tertiary uppercase">
                 {screenState === 'idle' && 'Standby'}
                 {screenState === 'loading' && 'Loading...'}
                 {screenState === 'playing' && 'Now Playing'}
@@ -546,14 +545,11 @@ function DigitalTwinContent() {
 
           {/* Claimable Campaigns */}
           <div className="rounded-xl border border-secondary bg-secondary p-4">
-            <p className="mb-3 text-sm font-semibold text-primary">
-              Claimable Campaigns
-            </p>
+            <p className="mb-3 text-sm font-semibold text-primary">Claimable Campaigns</p>
             <div className="flex flex-col gap-2">
               {availableCampaigns.map(campaign => {
                 const tags = tagsFromMask(campaign.tagMask);
-                const isDisabled =
-                  screenState !== 'idle' && screenState !== 'confirmed';
+                const isDisabled = screenState !== 'idle' && screenState !== 'confirmed';
 
                 return (
                   <div
@@ -571,12 +567,7 @@ function DigitalTwinContent() {
                       </div>
                       <div className="mt-1 flex gap-1">
                         {tags.map(tag => (
-                          <Badge
-                            key={tag}
-                            color="brand"
-                            size="sm"
-                            type="pill-color"
-                          >
+                          <Badge key={tag} color="brand" size="sm" type="pill-color">
                             {tag}
                           </Badge>
                         ))}

@@ -28,8 +28,8 @@ export async function pollUntilReady<T>(
         throw error;
         console.log(
           `${resourceName} could not be fetched after ${timeout}ms. ` +
-          `The transaction may have succeeded, but the account is not yet queryable. ` +
-          `Please refresh the page to try again.`
+            `The transaction may have succeeded, but the account is not yet queryable. ` +
+            `Please refresh the page to try again.`
         );
       }
 
