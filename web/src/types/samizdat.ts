@@ -1,169 +1,117 @@
-// ============================================================================
-// Samizdat Protocol Types
-// Mirrors the on-chain account structures from programs/samizdat/src/state/
-// ============================================================================
+/**
+ * Samizdat Protocol — shared types and helpers.
+ *
+ * All account structs, enums and value types come directly from the
+ * Codama-generated client (`@client/index`). This file re-exports
+ * the ones the UI cares about and adds a thin display-helper layer.
+ */
 
-// --- Enums ---
+import {
+  CampaignStatus,
+  NodeStatus,
+  PlayStatus,
+  PublisherStatus,
+  ScreenSize,
+} from '@client/index';
+import { isSome, type Option } from '@solana/kit';
 
-export enum CampaignStatus {
-  Active = 'Active',
-  Paused = 'Paused',
-  Depleted = 'Depleted',
-  Closed = 'Closed',
+// ─── Re-exports from generated client ───────────────────────────────────────
+
+export { CampaignStatus, NodeStatus, PlayStatus, PublisherStatus, ScreenSize };
+
+export type {
+  CampaignAccount,
+  NodeAccount,
+  PlayRecord,
+  PublisherAccount,
+} from '@client/index';
+
+export type {
+  GeoLocation,
+  GeoBounds,
+  Resolution,
+  TargetFilters,
+  TargetFiltersArgs,
+} from '@client/index';
+
+// ─── Utility: attach a PDA address to an account data struct ────────────────
+
+/** The generated account types don't carry their on-chain address.
+ *  We pair them with the address from the `Account<T>` envelope. */
+export type WithAddress<T> = T & { address: string };
+
+// ─── bigint → number for display ────────────────────────────────────────────
+
+/** Safely coerce bigint/number to JS number for display. */
+export const num = (v: bigint | number): number => Number(v);
+
+// ─── Option<T> unwrapping ───────────────────────────────────────────────────
+
+/** Unwrap Option<T> → T | null (avoids importing isSome in every page). */
+export function unwrap<T>(opt: Option<T>): T | null {
+  return isSome(opt) ? opt.value : null;
 }
 
-export enum NodeStatus {
-  Active = 'Active',
-  Offline = 'Offline',
-  Suspended = 'Suspended',
-}
+// ─── ScreenSize display helpers ─────────────────────────────────────────────
 
-export enum PublisherStatus {
-  Active = 'Active',
-  Suspended = 'Suspended',
-}
-
-export enum PlayStatus {
-  Claimed = 'Claimed',
-  Paid = 'Paid',
-  TimedOut = 'TimedOut',
-}
-
-export enum ScreenSize {
-  Small = 'Small',
-  Medium = 'Medium',
-  Large = 'Large',
-  XLarge = 'XLarge',
-}
-
-// --- Content Tags (bitmask) ---
-
-export const TAG_LABELS: Record<number, string> = {
-  0: 'None',
-  1: 'Crypto',
-  2: 'Betting',
-  4: 'NSFW',
-  8: 'Political',
-  16: 'Alcohol',
-};
-
-export const TAG_BITS = [
-  { bit: 1, label: 'Crypto' },
-  { bit: 2, label: 'Betting' },
-  { bit: 4, label: 'NSFW' },
-  { bit: 8, label: 'Political' },
-  { bit: 16, label: 'Alcohol' },
+/** The four enum members as a plain array (avoids Object.values quirks). */
+export const SCREEN_SIZES = [
+  ScreenSize.Small,
+  ScreenSize.Medium,
+  ScreenSize.Large,
+  ScreenSize.XLarge,
 ] as const;
 
-// --- Structs ---
+/** Numeric ScreenSize → human label.  Uses the enum's reverse mapping. */
+export const screenSizeLabel = (s: ScreenSize): string => ScreenSize[s];
 
-export interface GeoLocation {
-  /** Latitude in fixed-point (degrees × 1e7) */
-  latitude: number;
-  /** Longitude in fixed-point (degrees × 1e7) */
-  longitude: number;
+/** Form string → numeric enum lookup. */
+export const parseScreenSize = (s: string): ScreenSize =>
+  ScreenSize[s as keyof typeof ScreenSize];
+
+// ─── CampaignStatus display helpers ─────────────────────────────────────────
+
+/** The four statuses as a plain array. */
+export const CAMPAIGN_STATUSES = [
+  CampaignStatus.Active,
+  CampaignStatus.Paused,
+  CampaignStatus.Depleted,
+  CampaignStatus.Closed,
+] as const;
+
+/** Numeric CampaignStatus → human label. */
+export const campaignStatusLabel = (s: CampaignStatus): string =>
+  CampaignStatus[s];
+
+// ─── Content-tag bitmask helpers ────────────────────────────────────────────
+
+export const TAG_BITS = [
+  { bit: 1n, label: 'Crypto' },
+  { bit: 2n, label: 'Betting' },
+  { bit: 4n, label: 'NSFW' },
+  { bit: 8n, label: 'Political' },
+  { bit: 16n, label: 'Alcohol' },
+] as const;
+
+/** Extract human-readable tag labels from a bitmask. */
+export function tagsFromMask(mask: bigint | number): string[] {
+  const m = BigInt(mask);
+  return TAG_BITS.filter(t => (m & t.bit) !== 0n).map(t => t.label);
 }
 
-export interface Resolution {
-  width: number;
-  height: number;
+// ─── Display helpers ────────────────────────────────────────────────────────
+
+/** Convert fixed-point i64 (degrees × 1e7) to decimal degrees. */
+export function geoToDecimal(fixedPoint: bigint | number): number {
+  return Number(BigInt(fixedPoint)) / 1e7;
 }
 
-export interface GeoBounds {
-  minLat: number;
-  maxLat: number;
-  minLon: number;
-  maxLon: number;
+/** Convert lamports (u64) to SOL. */
+export function lamportsToSol(lamports: bigint | number): number {
+  return Number(BigInt(lamports)) / 1e9;
 }
 
-export interface TargetFilters {
-  minFootfall: number | null;
-  maxFootfall: number | null;
-  screenSizes: ScreenSize[];
-  geoBounds: GeoBounds | null;
-  establishmentTypes: string[];
-  requiredLandmarks: string[];
-}
-
-// --- Account Types ---
-
-export interface PublisherAccount {
-  address: string;
-  authority: string;
-  totalCampaigns: number;
-  totalSpent: number;
-  registeredAt: number;
-  status: PublisherStatus;
-}
-
-export interface CampaignAccount {
-  address: string;
-  publisherAccount: string;
-  campaignId: number;
-  cids: string[];
-  bountyPerPlay: number;
-  playsRemaining: number;
-  playsCompleted: number;
-  tagMask: number;
-  targetFilters: TargetFilters;
-  status: CampaignStatus;
-  claimCooldown: number;
-  createdAt: number;
-}
-
-export interface NodeAccount {
-  address: string;
-  authority: string;
-  nodeId: number;
-  location: GeoLocation;
-  screenSize: ScreenSize;
-  resolution: Resolution;
-  landmarks: string[];
-  blockedTagMask: number;
-  estimatedFootfall: number;
-  establishmentType: string;
-  totalPlays: number;
-  totalEarnings: number;
-  registeredAt: number;
-  status: NodeStatus;
-}
-
-export interface PlayRecord {
-  address: string;
-  campaignAccount: string;
-  nodeAccount: string;
-  nonce: number;
-  claimedAt: number;
-  confirmedAt: number;
-  cidIndex: number;
-  paymentAmount: number;
-  status: PlayStatus;
-}
-
-export interface ClaimCooldown {
-  campaign: string;
-  node: string;
-  lastClaimedAt: number;
-}
-
-// --- Helpers ---
-
-/** Convert fixed-point i64 (× 1e7) to human-readable degrees */
-export function geoToDecimal(fixedPoint: number): number {
-  return fixedPoint / 1e7;
-}
-
-/** Convert lamports to SOL */
-export function lamportsToSol(lamports: number): number {
-  return lamports / 1e9;
-}
-
-/** Extract tag labels from a bitmask */
-export function tagsFromMask(mask: number): string[] {
-  return TAG_BITS.filter(t => (mask & t.bit) !== 0).map(t => t.label);
-}
-
-/** Truncate a Solana address for display */
+/** Truncate a Solana address for display. */
 export function shortenAddress(address: string, chars = 4): string {
   return `${address.slice(0, chars)}...${address.slice(-chars)}`;
 }
