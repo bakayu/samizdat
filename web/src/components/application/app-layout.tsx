@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { Outlet, useLocation } from 'react-router';
+import { Link, Outlet, useLocation } from 'react-router';
 
 import {
   Globe05,
@@ -33,12 +33,12 @@ export function AppLayout() {
       <header className="sticky top-0 z-50 border-b border-secondary bg-primary/80 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-360 items-center justify-between px-4 md:px-8">
           {/* Logo */}
-          <a href="/" className="flex items-center gap-2.5">
+          <Link to="/" className="flex items-center gap-2.5">
             <img src="/samizdat/logo.svg" alt="Samizdat" className="size-8" />
             <span className="font-mono text-xl tracking-tight text-primary">
               samizdat
             </span>
-          </a>
+          </Link>
 
           {/* Nav */}
           <nav className="hidden md:block">
@@ -51,8 +51,8 @@ export function AppLayout() {
 
                 return (
                   <li key={item.href}>
-                    <a
-                      href={item.href}
+                    <Link
+                      to={item.href}
                       className={cx(
                         'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition duration-100 ease-linear',
                         isActive
@@ -62,7 +62,7 @@ export function AppLayout() {
                     >
                       <item.icon className="size-4" />
                       {item.label}
-                    </a>
+                    </Link>
                   </li>
                 );
               })}
