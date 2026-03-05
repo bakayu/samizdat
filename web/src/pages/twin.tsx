@@ -278,7 +278,13 @@ function DigitalTwinContent() {
         service.getCampaigns(),
       ]);
       setNode(n);
-      setAvailableCampaigns(camps.filter(c => c.status === CampaignStatus.Active && c.publisherAccount !== selectedWalletAccount?.address));
+      setAvailableCampaigns(
+        camps.filter(
+          c =>
+            c.status === CampaignStatus.Active &&
+            c.publisherAccount !== selectedWalletAccount?.address
+        )
+      );
     } catch (err) {
       console.error('Failed to load twin data:', err);
     } finally {
