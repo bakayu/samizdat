@@ -362,6 +362,7 @@ function CreateCampaignModal({
   onCreated: () => void;
 }) {
   const [submitting, setSubmitting] = useState(false);
+  const [selectedWalletAccount] = useContext(SelectedWalletAccountContext);
 
   const { control, handleSubmit, watch, setValue } = useForm<
     CreateCampaignFormInput,
@@ -456,7 +457,7 @@ function CreateCampaignModal({
       await pollUntilReady(
         async () => {
           const campaigns = await service.getCampaigns();
-          const found = campaigns.find(c => Number(c.campaignId) === data.campaignId);
+          const found = campaigns.find(c => Number(c.campaignId) === data.campaignId && c.publisherAccount === selectedWalletAccount?.address);
           if (!found) throw new Error('Campaign not found');
           return found;
         },
@@ -1035,7 +1036,7 @@ function PublisherDashboardContent({
           <tbody>
             {filteredCampaigns.map(campaign => (
               <CampaignRow
-                key={String(campaign.campaignId)}
+                key={campaign.address}
                 campaign={campaign}
                 onSelect={setSelectedCampaign}
               />

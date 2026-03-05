@@ -882,7 +882,7 @@ function NodeDashboardContent() {
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {availableCampaigns.map(campaign => (
                 <CampaignCard
-                  key={String(campaign.campaignId)}
+                  key={campaign.address}
                   campaign={campaign}
                   onClaim={handleClaim}
                   isClaiming={claimingCampaign === campaign.address}

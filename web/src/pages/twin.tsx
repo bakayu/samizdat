@@ -278,7 +278,7 @@ function DigitalTwinContent() {
         service.getCampaigns(),
       ]);
       setNode(n);
-      setAvailableCampaigns(camps.filter(c => c.status === CampaignStatus.Active));
+      setAvailableCampaigns(camps.filter(c => c.status === CampaignStatus.Active && c.publisherAccount !== selectedWalletAccount?.address));
     } catch (err) {
       console.error('Failed to load twin data:', err);
     } finally {
@@ -558,7 +558,7 @@ function DigitalTwinContent() {
 
                 return (
                   <div
-                    key={String(campaign.campaignId)}
+                    key={campaign.address}
                     className="flex items-center justify-between rounded-lg border border-secondary bg-primary p-3"
                   >
                     <div className="flex-1">
