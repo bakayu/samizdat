@@ -457,7 +457,11 @@ function CreateCampaignModal({
       await pollUntilReady(
         async () => {
           const campaigns = await service.getCampaigns();
-          const found = campaigns.find(c => Number(c.campaignId) === data.campaignId && c.publisherAccount === selectedWalletAccount?.address);
+          const found = campaigns.find(
+            c =>
+              Number(c.campaignId) === data.campaignId &&
+              c.publisherAccount === selectedWalletAccount?.address
+          );
           if (!found) throw new Error('Campaign not found');
           return found;
         },
