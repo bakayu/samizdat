@@ -65,7 +65,10 @@ function ProtocolFlowDiagram() {
   ];
 
   return (
-    <div ref={ref} className="flex flex-col items-center justify-center gap-12 md:flex-row md:gap-0">
+    <div
+      ref={ref}
+      className="flex flex-col items-center justify-center gap-12 md:flex-row md:gap-0"
+    >
       {steps.map((step, i) => (
         <div key={step.label} className="flex items-center gap-0">
           <motion.div
@@ -78,9 +81,7 @@ function ProtocolFlowDiagram() {
               <step.icon className="size-7 text-brand-500" />
             </div>
             <div className="text-center">
-              <p className="font-mono text-sm font-semibold text-primary">
-                {step.label}
-              </p>
+              <p className="font-mono text-sm font-semibold text-primary">{step.label}</p>
               <p className="max-w-35 text-xs text-tertiary">{step.sublabel}</p>
             </div>
           </motion.div>
@@ -139,19 +140,16 @@ export function LandingPage() {
           {/* Oversized typographic header */}
           <div className="flex flex-col gap-6">
             <div className="flex items-center gap-2">
-              <span className="pulse-dot inline-block size-2 rounded-full bg-brand-500" />
-              <span className="font-mono text-xs uppercase tracking-widest text-brand-500">
+              <span className="inline-block size-2 pulse-dot rounded-full bg-brand-500" />
+              <span className="font-mono text-xs tracking-widest text-brand-500 uppercase">
                 Live on Solana Devnet
               </span>
             </div>
 
-            <h1 className="max-w-5xl font-display text-display-xl font-normal leading-[0.95] tracking-tight text-primary md:text-[5rem] lg:text-[6.5rem]">
+            <h1 className="max-w-5xl font-display text-display-xl leading-[0.95] font-normal tracking-tight text-primary md:text-[5rem] lg:text-[6.5rem]">
               <StaggerRevealText text="Decentralized billboards." />
               <br />
-              <StaggerRevealText
-                text="Permissionless reach."
-                delay={0.4}
-              />
+              <StaggerRevealText text="Permissionless reach." delay={0.4} />
             </h1>
 
             <motion.p
@@ -173,12 +171,7 @@ export function LandingPage() {
               <Button href="/publisher" size="lg" iconTrailing={ArrowRight}>
                 I'm a Publisher
               </Button>
-              <Button
-                href="/node"
-                size="lg"
-                color="secondary"
-                iconTrailing={ArrowRight}
-              >
+              <Button href="/node" size="lg" color="secondary" iconTrailing={ArrowRight}>
                 I'm an Operator
               </Button>
             </motion.div>
@@ -186,7 +179,7 @@ export function LandingPage() {
 
           {/* Oversized bg accent text */}
           <div
-            className="pointer-events-none absolute -right-8 top-1/2 -translate-y-1/2 select-none font-display text-[20rem] font-normal leading-none tracking-tighter text-brand-500/3 md:text-[28rem]"
+            className="pointer-events-none absolute top-1/2 -right-8 -translate-y-1/2 font-display text-[20rem] leading-none font-normal tracking-tighter text-brand-500/3 select-none md:text-[28rem]"
             aria-hidden="true"
           >
             S
@@ -198,7 +191,7 @@ export function LandingPage() {
       <section className="border-b border-secondary py-20 md:py-28">
         <div className="mx-auto max-w-360 px-4 md:px-8">
           <div className="mb-12 flex flex-col gap-3">
-            <span className="font-mono text-xs uppercase tracking-widest text-brand-500">
+            <span className="font-mono text-xs tracking-widest text-brand-500 uppercase">
               How it works
             </span>
             <h2 className="max-w-lg font-display text-display-md text-primary">
@@ -214,7 +207,7 @@ export function LandingPage() {
       <section className="border-b border-secondary py-20 md:py-28">
         <div className="mx-auto max-w-360 px-4 md:px-8">
           <div className="mb-12 flex flex-col gap-3">
-            <span className="font-mono text-xs uppercase tracking-widest text-brand-500">
+            <span className="font-mono text-xs tracking-widest text-brand-500 uppercase">
               Protocol Features
             </span>
             <h2 className="max-w-lg font-display text-display-md text-primary">
@@ -279,28 +272,21 @@ export function LandingPage() {
               <Button href="/publisher" size="lg" iconLeading={Send01}>
                 Launch a Campaign
               </Button>
-              <Button
-                href="/twin"
-                size="lg"
-                color="secondary"
-                iconLeading={Monitor04}
-              >
+              <Button href="/twin" size="lg" color="secondary" iconLeading={Monitor04}>
                 Try the Digital Twin
               </Button>
             </div>
 
             <div className="mt-8 flex items-center gap-6">
               <div className="flex items-center gap-2">
-                <span className="pulse-dot inline-block size-2 rounded-full bg-success-500" />
+                <span className="inline-block size-2 pulse-dot rounded-full bg-success-500" />
                 <span className="font-mono text-xs text-tertiary">
                   8 active campaigns
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="pulse-dot inline-block size-2 rounded-full bg-brand-500" />
-                <span className="font-mono text-xs text-tertiary">
-                  1,247 total plays
-                </span>
+                <span className="inline-block size-2 pulse-dot rounded-full bg-brand-500" />
+                <span className="font-mono text-xs text-tertiary">1,247 total plays</span>
               </div>
             </div>
           </div>

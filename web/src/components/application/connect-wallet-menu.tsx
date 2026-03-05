@@ -43,11 +43,7 @@ function ConnectableWalletItem({
       const nextAccounts = await connect();
       // Prefer first new account
       for (const next of nextAccounts) {
-        if (
-          !existingAccounts.some(existing =>
-            uiWalletAccountsAreSame(next, existing)
-          )
-        ) {
+        if (!existingAccounts.some(existing => uiWalletAccountsAreSame(next, existing))) {
           onAccountSelect(next);
           return;
         }
@@ -84,9 +80,7 @@ function ConnectableWalletItem({
         <span className="grow truncate text-sm font-semibold text-secondary">
           {wallet.name}
         </span>
-        {isConnected && (
-          <span className="size-1.5 shrink-0 rounded-full bg-brand-500" />
-        )}
+        {isConnected && <span className="size-1.5 shrink-0 rounded-full bg-brand-500" />}
       </button>
 
       {/* Connected accounts */}
@@ -172,7 +166,7 @@ export function ConnectWalletMenu() {
   for (const wallet of wallets) {
     if (
       wallet.features.includes(StandardConnect) &&
-      wallet.features.includes(StandardDisconnect) && 
+      wallet.features.includes(StandardDisconnect) &&
       wallet.chains.includes(chainDetails.chain)
     ) {
       connectable.push(wallet);
@@ -182,7 +176,7 @@ export function ConnectWalletMenu() {
   return (
     <Dropdown.Root key={menuKey}>
       <Button size="sm" color="primary">
-        <div className='flex gap-2 items-center'>
+        <div className="flex items-center gap-2">
           {selectedWalletAccount ? (
             <ConnectedDisplay account={selectedWalletAccount} />
           ) : (
@@ -215,10 +209,7 @@ export function ConnectWalletMenu() {
                   onDisconnect={wallet => {
                     if (
                       selectedWalletAccount &&
-                      uiWalletAccountBelongsToUiWallet(
-                        selectedWalletAccount,
-                        wallet
-                      )
+                      uiWalletAccountBelongsToUiWallet(selectedWalletAccount, wallet)
                     ) {
                       setSelectedWalletAccount(undefined);
                     }

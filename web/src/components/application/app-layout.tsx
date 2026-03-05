@@ -1,12 +1,7 @@
 import type { FC } from 'react';
-import { Outlet, useLocation } from 'react-router';
+import { Link, Outlet, useLocation } from 'react-router';
 
-import {
-  Globe05,
-  Monitor04,
-  Send01,
-  Signal01,
-} from '@untitledui/icons';
+import { Globe05, Monitor04, Send01, Signal01 } from '@untitledui/icons';
 
 import { ConnectWalletMenu } from '@/components/application/connect-wallet-menu';
 import { cx } from '@/utils/cx';
@@ -33,26 +28,24 @@ export function AppLayout() {
       <header className="sticky top-0 z-50 border-b border-secondary bg-primary/80 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-360 items-center justify-between px-4 md:px-8">
           {/* Logo */}
-          <a href="/" className="flex items-center gap-2.5">
+          <Link to="/" className="flex items-center gap-2.5">
             <img src="/samizdat/logo.svg" alt="Samizdat" className="size-8" />
             <span className="font-mono text-xl tracking-tight text-primary">
               samizdat
             </span>
-          </a>
+          </Link>
 
           {/* Nav */}
           <nav className="hidden md:block">
             <ul className="flex items-center gap-1">
               {NAV_ITEMS.map(item => {
                 const isActive =
-                  item.href === '/'
-                    ? pathname === '/'
-                    : pathname.startsWith(item.href);
+                  item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
 
                 return (
                   <li key={item.href}>
-                    <a
-                      href={item.href}
+                    <Link
+                      to={item.href}
                       className={cx(
                         'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition duration-100 ease-linear',
                         isActive
@@ -62,7 +55,7 @@ export function AppLayout() {
                     >
                       <item.icon className="size-4" />
                       {item.label}
-                    </a>
+                    </Link>
                   </li>
                 );
               })}
@@ -83,9 +76,7 @@ export function AppLayout() {
       <footer className="border-t border-secondary py-6">
         <div className="mx-auto flex max-w-360 items-center justify-between px-4 text-xs text-quaternary md:px-8">
           <span className="font-mono">SAMIZDAT PROTOCOL</span>
-          <span className="font-mono">
-            SOLANA DEVNET • {new Date().getFullYear()}
-          </span>
+          <span className="font-mono">SOLANA DEVNET • {new Date().getFullYear()}</span>
         </div>
       </footer>
     </div>
