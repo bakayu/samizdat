@@ -83,25 +83,18 @@ describe("Samizdat Program – Happy Path", () => {
       publisher = pub!;
       operator = op!;
     } else {
-      const publisherKeypairBytes = new Uint8Array(
-        JSON.parse(
-          readFileSync(
-            `${process.env.HOME}/.config/solana/devnet-test.json`,
-            "utf-8",
-          ),
-        ),
-      );
-      publisher = await createKeyPairSignerFromBytes(publisherKeypairBytes);
+      const getBytes = (envVar: string | undefined, filePath: string) => {
+        const raw = envVar 
+          ? JSON.parse(envVar) 
+          : JSON.parse(readFileSync(filePath, "utf-8"));
+        return new Uint8Array(raw); 
+      };
 
-      const operatorKeypairBytes = new Uint8Array(
-        JSON.parse(
-          readFileSync(
-            `${process.env.HOME}/.config/solana/devnet-operator.json`,
-            "utf-8",
-          ),
-        ),
-      );
-      operator = await createKeyPairSignerFromBytes(operatorKeypairBytes);
+      const publisherPath = `${process.env.HOME}/.config/solana/devnet-test.json`;
+      const operatorPath = `${process.env.HOME}/.config/solana/devnet-operator.json`;
+
+      publisher = await createKeyPairSignerFromBytes(getBytes(process.env.KEYPAIR_ONE, publisherPath));
+      operator = await createKeyPairSignerFromBytes(getBytes(process.env.KEYPAIR_TWO, operatorPath));
     }
 
     ({ pda: publisherAccountPDA } = await getPDAAndBump(
